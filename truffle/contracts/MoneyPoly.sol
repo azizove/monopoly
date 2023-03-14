@@ -8,5 +8,4 @@ contract MoneyPoly is ERC20, ERC20Burnable {
     constructor() ERC20("MoneyPoly", "MPL") {
         _mint(msg.sender, 1000000 * 10 ** decimals());
     }
-    // new smart contract : structure joueur avec les infos du joueur + tableau dont l'index représente les cases et les valeurs sont le nombre des maisons 
 }
