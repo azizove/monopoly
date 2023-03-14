@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "description": "Truffle project with SimpleStorage contract",
   "scripts": {
-    "test": "truffle test"
+    "test": "truffle test",
+    "compile": "truffle compile",
+    "migrate": "truffle migrate",
+    "migrate:dev": "truffle migrate --network development "
   },
   "dependencies": {
     "@truffle/hdwallet-provider": "^2.1.7"
