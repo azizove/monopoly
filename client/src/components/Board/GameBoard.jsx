@@ -20,7 +20,10 @@ export const GameBoard = () =>{
 
         <div className="center-square square">
           <div className="center-txt">
-            <a href="https://www.coderdreams.com/">Visit CoderDreams to learn more</a>
+            <div>dice part</div>
+            <div>banker part</div>
+            <div>my cards</div>
+            <div>players cards</div>
           </div>
         </div>
       </div>
