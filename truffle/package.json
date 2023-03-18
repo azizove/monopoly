@@ -1,7 +1,7 @@
 {
   "name": "truffle-project",
   "version": "0.1.0",
-  "description": "Truffle project with SimpleStorage contract",
+  "description": "Truffle project with Monopoly contract",
   "scripts": {
     "test": "truffle test",
     "compile": "truffle compile",

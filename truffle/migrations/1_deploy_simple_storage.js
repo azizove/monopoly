@@ -1,5 +1,5 @@
-const SimpleStorage = artifacts.require("SimpleStorage");
+const Monopoly = artifacts.require("Monopoly");
 
 module.exports = function (deployer) {
-  deployer.deploy(SimpleStorage);
+  deployer.deploy(Monopoly);
 };
