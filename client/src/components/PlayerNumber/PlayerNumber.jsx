@@ -1,21 +1,22 @@
-import { useState, useEffect } from "react";
-import useEth from "../../contexts/EthContext/useEth";
+import { useState, useEffect, useContext } from "react";
 import React from 'react';
+import EthContext from "../../contexts/EthContext/EthContext";
 
 function Demo() {
 
   //   -----   STATES   -----
-  const { state: { contract, accounts } } = useEth();
   const [playerNumber, setPlayerNumber] = React.useState(null);
   const [playerPosition, setPlayerPosition] = React.useState(0);
   const [gameOn, setGameOn] = useState(false);
-
+  const [playerTurn, setPlayerTurn] = useState(1);
+  const [playerBalance, setPlayerBalance] = useState(0);
+  const { state: { accounts, monopolyContract, moneyPolyContract } } = useContext(EthContext);
 
   //   -----   FUNCTIONS   -----
   //   Player Number
   const assignPlayerNumber = async () => {
-    await contract.methods.assignPlayerNumber().send({ from: accounts[0] });
-    const player = await contract.methods.players(accounts[0]).call();
+    await monopolyContract.methods.assignPlayerNumber().send({ from: accounts[0] });
+    const player = await monopolyContract.methods.players(accounts[0]).call();
     if (player.playerNumber !== '0') {
       setPlayerNumber(player.playerNumber);
     }
@@ -23,66 +24,89 @@ function Demo() {
 
   useEffect(() => {
     const getPlayerNumber = async () => {
-      const player = await contract.methods.players(accounts[0]).call();
+      const player = await monopolyContract.methods.players(accounts[0]).call();
       if (player.playerNumber !== '0') {
         setPlayerNumber(player.playerNumber);
       }
     };
     getPlayerNumber();
-  }, [accounts, contract]);
+  }, [accounts, monopolyContract]);
 
   //   Player Position
-  const getPlayerPosition = async () => {
-    if (!playerNumber) return;
-    const position = await contract.methods.playerPosition(accounts[0]).call();
-    setPlayerPosition(position);
-  };
-
   useEffect(() => {
+    const getPlayerPosition = async () => {
+      const player = await monopolyContract.methods.players(accounts[0]).call();
+        setPlayerPosition(player.playerPosition);
+    };
     getPlayerPosition();
-  }, [accounts, contract]);
-  
+  }, [accounts, monopolyContract]);
 
   //   Game On
   useEffect(() => {
     const fetchGameOn = async () => {
-      const gameOnValue = await contract.methods.getGameOn().call();
+      const gameOnValue = await monopolyContract.methods.getGameOn().call();
       console.log("gameOnValue is on : ", gameOnValue); 
       setGameOn(gameOnValue);
     };
     fetchGameOn();
-  }, [accounts, contract, playerNumber]);
+  }, [accounts, monopolyContract, playerNumber]);
+
+    //   Player Turn
+  useEffect(() => {
+    const fetchPlayerTurn = async () => {
+      const playerTurnValue = await monopolyContract.methods.getPlayerTurn().call();
+      console.log("playerTurn is : ", playerTurnValue); 
+      setPlayerTurn(playerTurnValue);
+    };
+    fetchPlayerTurn();
+  }, [accounts, monopolyContract]);
 
   //   Reset Game
   const resetGame = async () => {
-    await contract.methods.resetGame().send({ from: accounts[0] });
+    await monopolyContract.methods.resetGame().send({ from: accounts[0] });
     setPlayerNumber(null);
     setPlayerPosition(0);
+    setPlayerTurn(1);
+    setPlayerBalance(0);
   }
 
 
   //   Throw Dice
   const throwDice = async () => {
-    await contract.methods.throwDice().send({ from: accounts[0] });
+    await monopolyContract.methods.throwDice().send({ from: accounts[0] });
   };
 
+  //   Player Balance
+  const getPlayerBalance = async () => {
+    const balance = await moneyPolyContract.methods.balanceOf(accounts[0]).call();
+    setPlayerBalance(balance);
+    console.log("balance is : ", balance); 
+    console.log("playerBalance is : ", playerBalance); 
+  };
+
+  useEffect(() => {
+    if (!moneyPolyContract) {
+      return;
+    }
+    getPlayerBalance();
+  }, [accounts, moneyPolyContract]);
 
   //   -----   EVENTS   -----
 
 
   useEffect(() => {
-    if (!contract) {
+    if (!monopolyContract) {
       return;
     }
-    contract.events.DiceThrown({}, (error, event) => {
+    monopolyContract.events.DiceThrown({}, (error, event) => {
       if (!error) {
-        // Mettre à jour l'état de React ici avec la nouvelle position du joueur
         setPlayerPosition(event.returnValues.playerPosition);
+        setPlayerTurn(event.returnValues.playerTurn);
       } else {
         console.error(error);
       }
     });
-  }, [accounts, contract]);
+  }, [accounts, monopolyContract]);
   
   
   //   -----   RENDERING   -----
@@ -95,6 +119,8 @@ function Demo() {
       <button onClick={resetGame}>Reset game</button>
       <button onClick={throwDice}>Throw dice</button>
       <p>Game is {gameOn ? "ON" : "OFF"}</p>
+      <p>Player Turn {playerTurn}</p>
+      <p>Player Balance {playerBalance}</p>
 
 
     </div>

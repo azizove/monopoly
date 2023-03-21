@@ -13,19 +13,27 @@ function EthProvider({ children }) {
         const accounts = await web3.eth.requestAccounts();
         const networkID = await web3.eth.net.getId();
         const { abi } = artifact;
-        let address, contract;
+        let address, contract, monopolyContract, moneyPolyContract;
         try {
           address = artifact.networks[networkID].address;
           contract = new web3.eth.Contract(abi, address);
+          const monopolyArtifact = require("../../contracts/Monopoly.json");
+          const monopolyAddress = monopolyArtifact.networks[networkID].address;
+          monopolyContract = new web3.eth.Contract(monopolyArtifact.abi, monopolyAddress);
+          const moneyPolyArtifact = require("../../contracts/MoneyPoly.json");
+          const moneyPolyAddress = moneyPolyArtifact.networks[networkID].address;
+          moneyPolyContract = new web3.eth.Contract(moneyPolyArtifact.abi, moneyPolyAddress);
         } catch (err) {
           console.error(err);
         }
         dispatch({
           type: actions.init,
-          data: { artifact, web3, accounts, networkID, contract }
+          data: { artifact, web3, accounts, networkID, contract, monopolyContract, moneyPolyContract }
         });
       }
-    }, []);
+    },
+    []
+  );
 
   useEffect(() => {
     const tryInit = async () => {
@@ -53,13 +61,11 @@ function EthProvider({ children }) {
   }, [init, state.artifact]);
 
   return (
-    <EthContext.Provider value={{
-      state,
-      dispatch
-    }}>
+    <EthContext.Provider value={{ state, dispatch }}>
       {children}
     </EthContext.Provider>
   );
 }
 
 export default EthProvider;
+

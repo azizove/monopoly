@@ -5,7 +5,15 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
 contract MoneyPoly is ERC20, ERC20Burnable {
-    constructor() ERC20("MoneyPoly", "MPL") {
-        _mint(msg.sender, 1000000 * 10 ** decimals());
+    constructor() ERC20("MoneyPoly", "MPL") {}
+
+    function mintTokens(address _to) public {
+       _mint(_to, 50000);
+      //  _mint(_to, 50000 * 10 ** decimals());
     }
+
+    function burnAll(address account) public {
+        _burn(account, balanceOf(account));
+}
+
 }

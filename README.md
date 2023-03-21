@@ -1,4 +1,6 @@
 truffle migrate --network development
+git push origin smartcontract-leo
+
 
 # React Truffle Box
 
