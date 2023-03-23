@@ -11,32 +11,32 @@ import { UtilityDisplay } from "./squares/UtilityDisplay";
 
 
 
-export const SquareInfo = ({ id }) => {
+export const SquareInfo = ({ square }) => {
 
-    const type= SquareConfigData.get(id)?.type;
-
+    const name = square.name;
+    const type = square.type;
     const getInfo = () => {
         if (type === SquareType.Airport) {
-            return <AirportDisplay id={id} />
+            return <AirportDisplay name={name} />
         }
         if (type === SquareType.Chance) {
-            return <ChanceDisplay id={id} />
+            return <ChanceDisplay name={name} />
         }
         if (type === SquareType.CentralPark) {
-            return <CentralParkDisplay id={id} />
+            return <CentralParkDisplay name={name} />
         }
         if (type === SquareType.Go) {
-            return <GoDisplay id={id} />
+            return <GoDisplay name={name} />
         }
         if (type === SquareType.Utility) {
-            return <UtilityDisplay id={id} />
+            return <UtilityDisplay name={name} />
         }
 
         if (type === SquareType.Jail || type === SquareType.GoToJail) {
             return null;
         }
 
-        return <PropertyDisplay id={id} />
+        return <PropertyDisplay id={square.id} name={name} />
     };
 
 

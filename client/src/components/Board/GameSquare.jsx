@@ -3,12 +3,13 @@ import { BoardSection } from "./BoardSection";
 import { SquareConfigData } from "./SquareData";
 import { SquareInfo } from "./SquareInfo";
 import { SquareType } from "./SquareType";
+import boardData from "../../data/board.json";
 
 
 export const GameSquare = ({ id }) => {
 
-  const section = SquareConfigData.get(id)?.section;
-  const squareType = SquareConfigData.get(id)?.type;
+  const section = boardData[id]?.section;
+  const squareType = boardData[id]?.type;
 
   const sectionMap = new Map([
     [BoardSection.Top, "top"], [BoardSection.Right, "right"], [BoardSection.Left, "left"], [BoardSection.Bottom, "bottom"]
@@ -36,7 +37,7 @@ export const GameSquare = ({ id }) => {
   return (
     <div className={getSquareClassName()} id={getSquareId()}>
       <div className={getContainerClassName()}>
-        <SquareInfo id={id} />
+        <SquareInfo square={boardData[id]} />
       </div>
     </div>
   );

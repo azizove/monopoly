@@ -1,6 +1,6 @@
 import React from "react";
 
-export const CentralParkDisplay = ({ id }) => {
+export const CentralParkDisplay = ({ name }) => {
 
     return (
         <React.Fragment>

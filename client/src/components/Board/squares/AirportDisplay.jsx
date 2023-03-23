@@ -3,9 +3,8 @@ import { NyThemeData } from "../NyTheme";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlane } from '@fortawesome/free-solid-svg-icons'
 
-export const AirportDisplay = ({ id }) => {
+export const AirportDisplay = ({ name }) => {
 
-    const txt = NyThemeData.get(id)?.name;
 
     return (
         <React.Fragment>
@@ -13,7 +12,7 @@ export const AirportDisplay = ({ id }) => {
             <div className="icon">
                 <FontAwesomeIcon icon={faPlane} size="3x" />
             </div>
-            <div className="square-name"> {txt}</div>
+            <div className="square-name"> {name}</div>
         </React.Fragment>
     );
 

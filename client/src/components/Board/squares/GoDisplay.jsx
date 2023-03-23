@@ -1,7 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHandPointLeft } from '@fortawesome/free-solid-svg-icons'
-export const GoDisplay = ({ id }) => {
+export const GoDisplay = ({ name }) => {
 
     return (
         <React.Fragment>
