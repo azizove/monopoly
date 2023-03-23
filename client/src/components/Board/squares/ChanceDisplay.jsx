@@ -2,7 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons'
 
-export const ChanceDisplay = ({ id }) => {
+export const ChanceDisplay = ({ name }) => {
 
     return (
         <React.Fragment>

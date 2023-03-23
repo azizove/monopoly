@@ -1,5 +1,6 @@
 import React from "react";
 import { GameSquare } from "./GameSquare";
+import { PropertyCard } from "../Cards/PropertyCard";
 
 export const GameBoard = () =>{
   const num_squares = Array.from(Array(40));
@@ -8,8 +9,7 @@ export const GameBoard = () =>{
     <React.Fragment>
       <div className="board">
 
-        {num_squares.map((n, index) => {
-          const id = index + 1;
+        {num_squares.map((n, id) => {
 
           return (<GameSquare
             id={id}
@@ -22,7 +22,7 @@ export const GameBoard = () =>{
           <div className="center-txt">
             <div>dice part</div>
             <div>banker part</div>
-            <div>my cards</div>
+            <div><PropertyCard /></div>
             <div>players cards</div>
           </div>
         </div>
