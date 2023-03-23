@@ -14,6 +14,10 @@ contract MoneyPoly is ERC20, ERC20Burnable {
 
     function burnAll(address account) public {
         _burn(account, balanceOf(account));
-}
+    }
+
+    function burn(address account, uint256 amount) public {
+    _burn(account, amount);
+    }
 
 }

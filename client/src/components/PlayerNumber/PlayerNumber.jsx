@@ -6,11 +6,13 @@ function Demo() {
 
   //   -----   STATES   -----
   const [playerNumber, setPlayerNumber] = React.useState(null);
-  const [playerPosition, setPlayerPosition] = React.useState(0);
+  const [playerPosition, setPlayerPosition] = React.useState(1);
   const [gameOn, setGameOn] = useState(false);
   const [playerTurn, setPlayerTurn] = useState(1);
   const [playerBalance, setPlayerBalance] = useState(0);
   const { state: { accounts, monopolyContract, moneyPolyContract } } = useContext(EthContext);
+  const [playerHasChoice, setPlayerHasChoice] = useState(false);
+  const [houses, setHouses] = useState([]);
 
   //   -----   FUNCTIONS   -----
   //   Player Number
@@ -61,6 +63,17 @@ function Demo() {
     fetchPlayerTurn();
   }, [accounts, monopolyContract]);
 
+    //   Get Houses
+    useEffect(() => {
+  //   check Houses
+  const getHouses = async () => {
+        const houses = await monopolyContract.methods.getHouses().call();
+        setHouses(houses);
+        console.log("houses : ", houses);
+      };
+      getHouses();
+    }, [accounts, monopolyContract,playerTurn]);
+
   //   Reset Game
   const resetGame = async () => {
     await monopolyContract.methods.resetGame().send({ from: accounts[0] });
@@ -68,6 +81,8 @@ function Demo() {
     setPlayerPosition(0);
     setPlayerTurn(1);
     setPlayerBalance(0);
+    setHouses([]);
+   
   }
 
 
@@ -76,12 +91,23 @@ function Demo() {
     await monopolyContract.methods.throwDice().send({ from: accounts[0] });
   };
 
+  //   Build House
+  const buildHouse = async () => {
+    await monopolyContract.methods.buildHouse().send({ from: accounts[0] });
+  };
+
+  //   End Turn
+  const endTurn = async () => {
+    await monopolyContract.methods.endTurn().send({ from: accounts[0] });
+  };
+
   //   Player Balance
   const getPlayerBalance = async () => {
     const balance = await moneyPolyContract.methods.balanceOf(accounts[0]).call();
     setPlayerBalance(balance);
     console.log("balance is : ", balance); 
     console.log("playerBalance is : ", playerBalance); 
+    console.log("player choice ", playerHasChoice);
   };
 
   useEffect(() => {
@@ -89,8 +115,27 @@ function Demo() {
       return;
     }
     getPlayerBalance();
+  //  refreshHouses(); // test
   }, [accounts, moneyPolyContract]);
 
+
+
+
+
+  
+  /*
+  const refreshHouses = async () => {
+    const allHouses = await contract.methods.getAllHouses().call();
+  
+    const houses = allHouses.map((house: House) => {
+      return [house.position, house.owner, house.number];
+    });
+  
+    // houses est maintenant un tableau à double entrée de 40 entrées, avec chacune la position, le propriétaire et le nombre de maison
+    console.log(houses);
+    setHouses(houses);
+  };
+*/
   //   -----   EVENTS   -----
 
 
@@ -102,6 +147,7 @@ function Demo() {
       if (!error) {
         setPlayerPosition(event.returnValues.playerPosition);
         setPlayerTurn(event.returnValues.playerTurn);
+        setPlayerHasChoice(event.returnValues.playerHasChoice);
       } else {
         console.error(error);
       }
@@ -121,6 +167,17 @@ function Demo() {
       <p>Game is {gameOn ? "ON" : "OFF"}</p>
       <p>Player Turn {playerTurn}</p>
       <p>Player Balance {playerBalance}</p>
+      <p>Player has Choice {playerHasChoice ? "Yes" : "No"}</p>
+      <div>
+      {playerHasChoice && gameOn && playerNumber == playerTurn
+        ? <div>
+        <button onClick={buildHouse}>build House</button>
+        <button onClick={endTurn}>end Turn</button>
+          </div>
+        : <p>not able to build here</p>
+      }
+    </div>
+    <p>Houses {houses}</p>
 
 
     </div>
