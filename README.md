@@ -1,5 +1,22 @@
 truffle migrate --network development
-git push origin smartcontract
+
+git push origin smartcontract     // pousser sur ma branche
+
+git pull origin master       // se mettre a jour
+
+
+Optimisations :
+
+players: 
+-> mapping(address => Player) public players; // sert a retrouver position et numero de joueur a partir de l addresse
+-> address[] private playerAddresses; // tableau des addresses des joueurs. Sert a itérer pour le nettoyage
+
+houses:
+-> House[] public houses; // l index correspond a la position de la maison - 1
+
+properties:
+-> Property[] public properties; // tableau de structures
+
 
 
 # React Truffle Box

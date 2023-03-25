@@ -21,22 +21,30 @@ contract Monopoly {
     }
 
     struct House {
-        uint256 position;
         uint256 owner; // playerNumber
+        uint256 amountOfHouses; // NEW
     }
 
     uint256 public playerCount = 0;
     mapping(address => Player) public players;
     bool public gameOn = false;
     address public adminAddress;
-   // OLD EnumerableSet.AddressSet private playerSet;
     uint256 public playerTurn = 1;
     Property[] public properties;
     bool public playerHasChoice;
     House[] public houses;
     address[] private playerAddresses; // tableau des addresses des joueurs. Sert a itérer pour le nettoyage
 
-
+    // Déclarer les variables de type Property pour éviter la répétition
+    Property NOT_AVAILABLE = Property(false, 0, 0);
+    Property AVAILABLE_1000 = Property(true, 1000, 100);
+    Property AVAILABLE_2000 = Property(true, 2000, 200);
+    Property AVAILABLE_3000 = Property(true, 3000, 300);
+    Property AVAILABLE_4000 = Property(true, 4000, 400);
+    Property AVAILABLE_5000 = Property(true, 5000, 500);
+    Property AVAILABLE_6000 = Property(true, 6000, 600);
+    Property AVAILABLE_7000 = Property(true, 7000, 700);
+    Property AVAILABLE_8000 = Property(true, 8000, 800);
 
     event NewPlayer(address indexed player, uint256 indexed number);
     event DiceThrown(address indexed player, uint256 diceValue, uint256 playerPosition, uint256 playerTurn, bool playerHasChoice);
@@ -46,50 +54,54 @@ contract Monopoly {
     // Initialiser le contrat MoneyPoly en utilisant son adresse
     moneyPolyContract = MoneyPoly(_moneyPolyAddress);
 
-        properties.push(Property(false, 0, 0));
-        properties.push(Property(true, 1000, 100));
-        properties.push(Property(false, 0, 0));
-        properties.push(Property(true, 1000, 100));
-        properties.push(Property(true, 1000, 100));
-        properties.push(Property(false, 0, 0));
-        properties.push(Property(true, 2000, 200));
-        properties.push(Property(false, 0, 0));
-        properties.push(Property(true, 2000, 200));
-        properties.push(Property(true, 2000, 200));
-        properties.push(Property(false, 0, 0));
-        properties.push(Property(true, 3000, 300));
-        properties.push(Property(false, 0, 0));
-        properties.push(Property(true, 3000, 300));
-        properties.push(Property(true, 3000, 300));
-        properties.push(Property(false, 0, 0));
-        properties.push(Property(true, 4000, 400));
-        properties.push(Property(false, 0, 0));
-        properties.push(Property(true, 4000, 400));
-        properties.push(Property(true, 4000, 400));
-        properties.push(Property(false, 0, 0));
-        properties.push(Property(true, 5000, 500));
-        properties.push(Property(false, 0, 0));
-        properties.push(Property(true, 5000, 500));
-        properties.push(Property(true, 5000, 500));
-        properties.push(Property(false, 0, 0));
-        properties.push(Property(true, 6000, 600));
-        properties.push(Property(false, 0, 0));
-        properties.push(Property(true, 6000, 600));
-        properties.push(Property(true, 6000, 600));
-        properties.push(Property(false, 0, 0));
-        properties.push(Property(true, 7000, 700));
-        properties.push(Property(false, 0, 0));
-        properties.push(Property(true, 7000, 700));
-        properties.push(Property(true, 7000, 700));
-        properties.push(Property(false, 0, 0));
-        properties.push(Property(true, 8000, 800));
-        properties.push(Property(true, 8000, 800));
-        properties.push(Property(false, 0, 0));
-        properties.push(Property(true, 8000, 800));
+        properties.push(NOT_AVAILABLE);
+        properties.push(AVAILABLE_1000);
+        properties.push(NOT_AVAILABLE);
+        properties.push(AVAILABLE_1000);
+        properties.push(AVAILABLE_1000);
+        properties.push(NOT_AVAILABLE);
+        properties.push(AVAILABLE_2000);
+        properties.push(NOT_AVAILABLE);
+        properties.push(AVAILABLE_2000);
+        properties.push(AVAILABLE_2000);
+        properties.push(NOT_AVAILABLE);
+        properties.push(AVAILABLE_3000);
+        properties.push(NOT_AVAILABLE);
+        properties.push(AVAILABLE_3000);
+        properties.push(AVAILABLE_3000);
+        properties.push(NOT_AVAILABLE);
+        properties.push(AVAILABLE_4000);
+        properties.push(NOT_AVAILABLE);
+        properties.push(AVAILABLE_4000);
+        properties.push(AVAILABLE_4000);
+        properties.push(NOT_AVAILABLE);
+        properties.push(AVAILABLE_5000);
+        properties.push(NOT_AVAILABLE);
+        properties.push(AVAILABLE_5000);
+        properties.push(AVAILABLE_5000);
+        properties.push(NOT_AVAILABLE);
+        properties.push(AVAILABLE_6000);
+        properties.push(NOT_AVAILABLE);
+        properties.push(AVAILABLE_6000);
+        properties.push(AVAILABLE_6000);
+        properties.push(NOT_AVAILABLE);
+        properties.push(AVAILABLE_7000);
+        properties.push(NOT_AVAILABLE);
+        properties.push(AVAILABLE_7000);
+        properties.push(AVAILABLE_7000);
+        properties.push(NOT_AVAILABLE);
+        properties.push(AVAILABLE_8000);
+        properties.push(AVAILABLE_8000);
+        properties.push(NOT_AVAILABLE);
+        properties.push(AVAILABLE_8000);
 
         playerAddresses = new address[](4); // initialiser le tableau playerAddresses avec une taille de 4
 
-
+            // TEST5
+               for (uint256 i = 0; i < 40; i++) {
+            House memory newHouse = House(0, 0);
+            houses.push(newHouse);
+            }           
 }
     function generateRandomNumber() private view returns (uint256) {
     return uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, msg.sender))) % 6 + 1;
@@ -113,7 +125,6 @@ contract Monopoly {
 
     function resetGame() public {
 
-        // NEW
         require(msg.sender == adminAddress, "Only the admin can reset the game");
             // Burn tous les tokens de tous les joueurs en appelant la fonction burnAll de MoneyPoly
         for (uint i = 0; i < playerAddresses.length; i++) {
@@ -126,13 +137,18 @@ contract Monopoly {
         gameOn = false;
         playerTurn = 1;
         delete houses;
-        // Réinitialiser le numéro de joueur et la position pour tous les joueurs enregistrés
+        for (uint256 i = 0; i < 40; i++) {
+            House memory newHouse = House(0, 0);
+            houses.push(newHouse);
+            }
+
+        // Réinitialiser le numéro de joueur et la position pour tous les joueurs enregistrés, on doit boucler, car cest un mapping
         for (uint256 i = 0; i < playerAddresses.length; i++) {
             address playerAddress = playerAddresses[i];
             players[playerAddress].playerNumber = 0;
             players[playerAddress].playerPosition = 0;
         }
-        playerAddresses = new address[](0);
+        playerAddresses = new address[](4);
     }
 
     function getGameOn() public view returns (bool) {
@@ -158,7 +174,6 @@ contract Monopoly {
         _;
     }
 
-    //new4
     function throwDice() public onlyPlayer gameIsOn ItIsPlayerTurn {
         uint256 diceValue = generateRandomNumber();
         movePlayer(diceValue);
@@ -173,16 +188,13 @@ contract Monopoly {
     }
 
     function checkOwner() private view returns (bool) {
-        uint256 position = players[msg.sender].playerPosition;
-        bool otherOwner = false;
-        for (uint i = 0; i < houses.length; i++) {
-            if (houses[i].position == position && houses[i].owner != players[msg.sender].playerNumber) {
-                otherOwner = true;
-                break;
-            }
-        }
-        return otherOwner;
+    uint256 position = players[msg.sender].playerPosition;
+    bool otherOwner = false;
+    if (houses[position-1].owner != players[msg.sender].playerNumber && houses[position-1].owner != 0) {
+        otherOwner = true;
     }
+    return otherOwner;
+}
 
     function setPlayerHasChoice() private {
         if (properties[players[msg.sender].playerPosition-1].isConstructible && moneyPolyContract.balanceOf(msg.sender) >= properties[players[msg.sender].playerPosition-1].constructionCost && !checkOwner()) {
@@ -194,48 +206,26 @@ contract Monopoly {
     }
 
 
-function buildHouse() public onlyPlayer gameIsOn ItIsPlayerTurn {
-    require(playerHasChoice == true, "Player must have choice");
-    uint256 constructionCost = properties[players[msg.sender].playerPosition-1].constructionCost;
-    require(moneyPolyContract.balanceOf(msg.sender) >= constructionCost, "Not enough tokens");
-    
-    /*
-    // Vérifier si le joueur a déjà des maisons construites
-    uint256 numberOfHouses = 1;
-    for (uint256 i = 0; i < houses.length; i++) {
-        if (houses[i].owner == players[msg.sender].playerNumber) {
-            numberOfHouses++;
-        }
+    function buildHouse() public onlyPlayer gameIsOn ItIsPlayerTurn {
+        require(playerHasChoice == true, "Player must have choice");
+        uint256 constructionCost = properties[players[msg.sender].playerPosition-1].constructionCost;
+        require(moneyPolyContract.balanceOf(msg.sender) >= constructionCost, "Not enough tokens");
+        houses[players[msg.sender].playerPosition-1].owner = players[msg.sender].playerNumber; // assigne le proprio
+        houses[players[msg.sender].playerPosition-1].amountOfHouses += 1; // incremente amountOfHouses
+        // Brûler les jetons nécessaires pour la construction de la maison
+        moneyPolyContract.burn(msg.sender, constructionCost);
+        playerTurn = (playerTurn) % 4 + 1;
     }
-    numberOfHouses++; // pour la maison construite
-    */
-    House memory newHouse = House(players[msg.sender].playerPosition, players[msg.sender].playerNumber);
-    houses.push(newHouse);
-    
-    // Brûler les jetons nécessaires pour la construction de la maison
-    moneyPolyContract.burn(msg.sender, constructionCost);
-    playerTurn = (playerTurn) % 4 + 1;
-}
 
-function endTurn() public onlyPlayer gameIsOn ItIsPlayerTurn {
-    require(playerHasChoice == true, "Player must have choice");
-    playerTurn = (playerTurn) % 4 + 1;
-}
 
-function getHouses() public view returns (uint256[][] memory) {
-    uint256[][] memory housesData = new uint256[][](40);
-    for (uint256 i = 0; i < housesData.length; i++) {
-        housesData[i] = new uint256[](2);
+    function endTurn() public onlyPlayer gameIsOn ItIsPlayerTurn {
+        require(playerHasChoice == true, "Player must have choice");
+        playerTurn = (playerTurn) % 4 + 1;
     }
-    for (uint256 i = 0; i < houses.length; i++) {
-        uint256 position = houses[i].position - 1; // convertir en index 0-based
-        housesData[position][0] = houses[i].owner;
-        housesData[position][1] = housesData[position][1] + 1;
+
+
+    function getHouses() public view returns (House[] memory) {
+        return houses;
     }
-    return housesData;
-}
-
-
-
 
 }
