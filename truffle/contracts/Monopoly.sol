@@ -29,11 +29,12 @@ contract Monopoly {
     mapping(address => Player) public players;
     bool public gameOn = false;
     address public adminAddress;
-    EnumerableSet.AddressSet private playerSet;
+   // OLD EnumerableSet.AddressSet private playerSet;
     uint256 public playerTurn = 1;
     Property[] public properties;
     bool public playerHasChoice;
     House[] public houses;
+    address[] private playerAddresses; // tableau des addresses des joueurs. Sert a itérer pour le nettoyage
 
 
 
@@ -86,6 +87,8 @@ contract Monopoly {
         properties.push(Property(false, 0, 0));
         properties.push(Property(true, 8000, 800));
 
+        playerAddresses = new address[](4); // initialiser le tableau playerAddresses avec une taille de 4
+
 
 }
     function generateRandomNumber() private view returns (uint256) {
@@ -95,11 +98,10 @@ contract Monopoly {
     function assignPlayerNumber() public {
         require(players[msg.sender].playerNumber == 0, "Player already has a number");
         require(playerCount < 4, "Maximum number of players reached");
-
         players[msg.sender].playerNumber = playerCount + 1;
         players[msg.sender].playerPosition = 1;
-        playerSet.add(msg.sender);
-        moneyPolyContract.mintTokens(msg.sender); //new3
+         playerAddresses[playerCount] = msg.sender; // Ajout de l'adresse du joueur au tableau
+        moneyPolyContract.mintTokens(msg.sender);
         emit NewPlayer(msg.sender, playerCount + 1);
 
         playerCount++;
@@ -110,10 +112,12 @@ contract Monopoly {
     }
 
     function resetGame() public {
+
+        // NEW
         require(msg.sender == adminAddress, "Only the admin can reset the game");
-        // Burn tous les tokens de tous les joueurs en appelant la fonction burnAll de MoneyPoly
-        for (uint i = 0; i < playerSet.length(); i++) {
-            address playerAddress = playerSet.at(i);
+            // Burn tous les tokens de tous les joueurs en appelant la fonction burnAll de MoneyPoly
+        for (uint i = 0; i < playerAddresses.length; i++) {
+            address playerAddress = playerAddresses[i];
             if (players[playerAddress].playerNumber != 0) {
                 moneyPolyContract.burnAll(playerAddress);
             }
@@ -122,26 +126,13 @@ contract Monopoly {
         gameOn = false;
         playerTurn = 1;
         delete houses;
-        // Réinitialiser le numéro de joueur pour tous les joueurs enregistrés
-        for (uint256 i = 1; i <= 4; i++) {
-            address playerAddress = getPlayerAddress(i);
-            if (playerAddress != address(0)) {
-                players[playerAddress].playerNumber = 0;
-                players[playerAddress].playerPosition = 0;
-                playerSet.remove(playerAddress);
-            }
+        // Réinitialiser le numéro de joueur et la position pour tous les joueurs enregistrés
+        for (uint256 i = 0; i < playerAddresses.length; i++) {
+            address playerAddress = playerAddresses[i];
+            players[playerAddress].playerNumber = 0;
+            players[playerAddress].playerPosition = 0;
         }
-
-    }
-    function getPlayerAddress(uint256 playerNumber) internal view returns (address) {
-        // Récupérer l'adresse du joueur correspondant au numéro de joueur donné
-        for (uint i = 0; i < playerSet.length(); i++) {
-            address playerAddress = playerSet.at(i);
-            if (players[playerAddress].playerNumber == playerNumber) {
-                return playerAddress;
-            }
-        }
-        return address(0);
+        playerAddresses = new address[](0);
     }
 
     function getGameOn() public view returns (bool) {
@@ -203,35 +194,6 @@ contract Monopoly {
     }
 
 
-/* OLD
-    function throwDice() public onlyPlayer gameIsOn ItIsPlayerTurn {
-    uint256 diceValue = generateRandomNumber();
-    uint256 newPosition = players[msg.sender].playerPosition + diceValue;
-    players[msg.sender].playerPosition = newPosition;
-    if(newPosition > 40) {newPosition = newPosition % 40;}
-
-    // Vérifier s'il y a une maison a un autre joueur
-    uint256 position = players[msg.sender].playerPosition;
-    bool otherOwner = false;
-    for (uint i = 0; i < houses.length; i++) {
-        if (houses[i].position == position && houses[i].owner != players[msg.sender].playerNumber) {
-            otherOwner = true;
-            break;
-        }
-    }
-    // Le joueur peut construire
-    if (properties[newPosition-1].isConstructible && moneyPolyContract.balanceOf(msg.sender) >= properties[newPosition-1].constructionCost && !otherOwner) {
-      playerHasChoice = true;
-    } else {
-      //  Le joueur ne peut pas construire
-      playerHasChoice = false;
-      playerTurn = (playerTurn) % 4 + 1;
-      }
-    emit DiceThrown(msg.sender, diceValue, players[msg.sender].playerPosition, playerTurn, playerHasChoice);
-}
-*/
-
-// neew
 function buildHouse() public onlyPlayer gameIsOn ItIsPlayerTurn {
     require(playerHasChoice == true, "Player must have choice");
     uint256 constructionCost = properties[players[msg.sender].playerPosition-1].constructionCost;
