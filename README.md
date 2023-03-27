@@ -18,6 +18,9 @@ properties:
 -> Property[] public properties; // tableau de structures
 
 
+Bugs :
+Un joueur qui a le choix, peut relancer le dé
+
 
 # React Truffle Box
 

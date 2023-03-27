@@ -10,8 +10,8 @@ contract Monopoly {
     MoneyPoly public moneyPolyContract;
 
     struct Player {
-        uint256 playerPosition;
-        uint256 playerNumber;
+        uint8 playerPosition;
+        uint8 playerNumber;
     }
 
     struct Property {
@@ -21,19 +21,20 @@ contract Monopoly {
     }
 
     struct House {
-        uint256 owner; // playerNumber
-        uint256 amountOfHouses;
+        uint8 owner; // playerNumber
+        uint8 amountOfHouses;
     }
 
-    uint256 public playerCount = 0;
+    uint8 public playerCount = 0;
     mapping(address => Player) public players;
     bool public gameOn = false;
     address public adminAddress;
-    uint256 public playerTurn = 1;
+    uint8 public playerTurn = 1;
     Property[] public properties;
     bool public playerHasChoice;
     House[] public houses;
     address[] private playerAddresses; // tableau des addresses des joueurs. Sert a itérer pour le nettoyage
+    bool public playerThrown = false; // sert a se proteger d un lancer multiple
 
     // Déclarer les variables de type Property pour éviter la répétition
     Property NOT_AVAILABLE = Property(false, 0, 0);
@@ -46,8 +47,8 @@ contract Monopoly {
     Property AVAILABLE_7000 = Property(true, 7000, 700);
     Property AVAILABLE_8000 = Property(true, 8000, 800);
 
-    event NewPlayer(address indexed player, uint256 indexed number);
-    event DiceThrown(address indexed player, uint256 diceValue, uint256 playerPosition, uint256 playerTurn, bool playerHasChoice);
+    event NewPlayer(address indexed player, uint8 indexed number);
+    event DiceThrown(address indexed player, uint8 diceValue, uint8 playerPosition, uint8 playerTurn, bool playerHasChoice);
 
     constructor(address _adminAddress, address _moneyPolyAddress) {
     adminAddress = _adminAddress;
@@ -98,7 +99,7 @@ contract Monopoly {
         playerAddresses = new address[](4); // initialiser le tableau playerAddresses avec une taille de 4
 
             // TEST5
-               for (uint256 i = 0; i < 40; i++) {
+               for (uint8 i = 0; i < 40; i++) {
             House memory newHouse = House(0, 0);
             houses.push(newHouse);
             }           
@@ -127,7 +128,7 @@ contract Monopoly {
 
         require(msg.sender == adminAddress, "Only the admin can reset the game");
             // Burn tous les tokens de tous les joueurs en appelant la fonction burnAll de MoneyPoly
-        for (uint i = 0; i < playerAddresses.length; i++) {
+        for (uint8 i = 0; i < playerAddresses.length; i++) {
             address playerAddress = playerAddresses[i];
             if (players[playerAddress].playerNumber != 0) {
                 moneyPolyContract.burnAll(playerAddress);
@@ -137,13 +138,13 @@ contract Monopoly {
         gameOn = false;
         playerTurn = 1;
         delete houses;
-        for (uint256 i = 0; i < 40; i++) {
+        for (uint8 i = 0; i < 40; i++) {
             House memory newHouse = House(0, 0);
             houses.push(newHouse);
             }
 
         // Réinitialiser le numéro de joueur et la position pour tous les joueurs enregistrés, on doit boucler, car cest un mapping
-        for (uint256 i = 0; i < playerAddresses.length; i++) {
+        for (uint8 i = 0; i < playerAddresses.length; i++) {
             address playerAddress = playerAddresses[i];
             players[playerAddress].playerNumber = 0;
             players[playerAddress].playerPosition = 0;
@@ -174,21 +175,28 @@ contract Monopoly {
         _;
     }
 
-    function throwDice() public onlyPlayer gameIsOn ItIsPlayerTurn {
-        uint256 diceValue = generateRandomNumber();
+        modifier firstThrown {
+        require(!playerThrown, "You have already thrown this turn.");
+        _;
+    }
+
+    function throwDice() public onlyPlayer gameIsOn ItIsPlayerTurn firstThrown {
+        playerThrown = true;
+        uint256 bigDiceValue = generateRandomNumber();
+        uint8 diceValue = uint8(bigDiceValue);
         movePlayer(diceValue);
         setPlayerHasChoice();
         emit DiceThrown(msg.sender, diceValue, players[msg.sender].playerPosition, playerTurn, playerHasChoice);
     }
 
-    function movePlayer(uint256 diceValue) private {
-        uint256 newPosition = players[msg.sender].playerPosition + diceValue;
+    function movePlayer(uint8 diceValue) private {
+        uint8 newPosition = players[msg.sender].playerPosition + diceValue;
         players[msg.sender].playerPosition = newPosition;
         if(newPosition > 40) {newPosition = newPosition % 40;}
     }
 
     function checkOwner() private view returns (bool) {
-    uint256 position = players[msg.sender].playerPosition;
+    uint8 position = players[msg.sender].playerPosition;
     bool otherOwner = false;
     if (houses[position-1].owner != players[msg.sender].playerNumber && houses[position-1].owner != 0) {
         otherOwner = true;
@@ -202,6 +210,7 @@ contract Monopoly {
         } else {
             playerHasChoice = false;
             playerTurn = (playerTurn) % 4 + 1; // si pas le choix, on passe au joueur suivant
+            playerThrown = false;
         }
     }
 
@@ -215,12 +224,14 @@ contract Monopoly {
         // Brûler les jetons nécessaires pour la construction de la maison
         moneyPolyContract.burn(msg.sender, constructionCost);
         playerTurn = (playerTurn) % 4 + 1;
+        playerThrown = false;
     }
 
 
     function endTurn() public onlyPlayer gameIsOn ItIsPlayerTurn {
         require(playerHasChoice == true, "Player must have choice");
         playerTurn = (playerTurn) % 4 + 1;
+        playerThrown = false;
     }
 
 
@@ -228,10 +239,10 @@ contract Monopoly {
         return houses;
     }
 
-    function getAllPlayerPositions() public view returns (uint256[] memory) {
-    uint256[] memory positions = new uint256[](playerCount);
+    function getAllPlayerPositions() public view returns (uint8[] memory) {
+    uint8[] memory positions = new uint8[](playerCount);
 
-    for (uint256 i = 0; i < playerCount; i++) {
+    for (uint8 i = 0; i < playerCount; i++) {
         positions[i] = players[playerAddresses[i]].playerPosition;
     }
 
