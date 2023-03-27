@@ -13,6 +13,7 @@ function Demo() {
   const { state: { accounts, monopolyContract, moneyPolyContract } } = useContext(EthContext);
   const [playerHasChoice, setPlayerHasChoice] = useState(false);
   const [houses, setHouses] = useState([]);
+  const [allPlayerPositions, setAllPlayerPositions] = useState([]);
 
   //   -----   FUNCTIONS   -----
   //   Player Number
@@ -118,7 +119,16 @@ function Demo() {
   //  refreshHouses(); // test
   }, [accounts, moneyPolyContract]);
 
-
+// All player positions
+useEffect(() => {
+  const getAllPlayerPositions = async () => {
+    const allPlayerPositionsValue = await monopolyContract.methods.getAllPlayerPositions().call();
+    console.log("allPlayerPositionsValue is : ", allPlayerPositionsValue); 
+    setAllPlayerPositions(allPlayerPositionsValue);
+  };
+  getAllPlayerPositions();
+  console.log("allPlayerPositions is : ", allPlayerPositions);
+}, [accounts, monopolyContract]);
 
 
 
@@ -194,6 +204,11 @@ function Demo() {
       }
     </div>
     <p>Houses {houses}</p>
+    <div>
+      {allPlayerPositions.map((position, i) => (
+        <p key={i}>Player {i + 1} is at position {position}</p>
+      ))}
+    </div>
 
 
     </div>

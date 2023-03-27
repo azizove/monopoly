@@ -22,7 +22,7 @@ contract Monopoly {
 
     struct House {
         uint256 owner; // playerNumber
-        uint256 amountOfHouses; // NEW
+        uint256 amountOfHouses;
     }
 
     uint256 public playerCount = 0;
@@ -227,5 +227,16 @@ contract Monopoly {
     function getHouses() public view returns (House[] memory) {
         return houses;
     }
+
+    function getAllPlayerPositions() public view returns (uint256[] memory) {
+    uint256[] memory positions = new uint256[](playerCount);
+
+    for (uint256 i = 0; i < playerCount; i++) {
+        positions[i] = players[playerAddresses[i]].playerPosition;
+    }
+
+    return positions;
+}
+
 
 }
