@@ -167,8 +167,43 @@ contract Monopoly {
         _;
     }
 
-    // function throwDice() public onlyPlayer {
-    // testing purpose
+    //new4
+    function throwDice() public onlyPlayer gameIsOn ItIsPlayerTurn {
+        uint256 diceValue = generateRandomNumber();
+        movePlayer(diceValue);
+        setPlayerHasChoice();
+        emit DiceThrown(msg.sender, diceValue, players[msg.sender].playerPosition, playerTurn, playerHasChoice);
+    }
+
+    function movePlayer(uint256 diceValue) private {
+        uint256 newPosition = players[msg.sender].playerPosition + diceValue;
+        players[msg.sender].playerPosition = newPosition;
+        if(newPosition > 40) {newPosition = newPosition % 40;}
+    }
+
+    function checkOwner() private view returns (bool) {
+        uint256 position = players[msg.sender].playerPosition;
+        bool otherOwner = false;
+        for (uint i = 0; i < houses.length; i++) {
+            if (houses[i].position == position && houses[i].owner != players[msg.sender].playerNumber) {
+                otherOwner = true;
+                break;
+            }
+        }
+        return otherOwner;
+    }
+
+    function setPlayerHasChoice() private {
+        if (properties[players[msg.sender].playerPosition-1].isConstructible && moneyPolyContract.balanceOf(msg.sender) >= properties[players[msg.sender].playerPosition-1].constructionCost && !checkOwner()) {
+            playerHasChoice = true;            // on ne passe pas au tour suivant, car le joueur appelera buildHouse ou endTurn
+        } else {
+            playerHasChoice = false;
+            playerTurn = (playerTurn) % 4 + 1; // si pas le choix, on passe au joueur suivant
+        }
+    }
+
+
+/* OLD
     function throwDice() public onlyPlayer gameIsOn ItIsPlayerTurn {
     uint256 diceValue = generateRandomNumber();
     uint256 newPosition = players[msg.sender].playerPosition + diceValue;
@@ -194,6 +229,7 @@ contract Monopoly {
       }
     emit DiceThrown(msg.sender, diceValue, players[msg.sender].playerPosition, playerTurn, playerHasChoice);
 }
+*/
 
 // neew
 function buildHouse() public onlyPlayer gameIsOn ItIsPlayerTurn {

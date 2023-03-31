@@ -159,12 +159,28 @@ function Demo() {
   return (
     <div className="btns">
 
-      <button onClick={assignPlayerNumber}>Assign player number</button>
+      
       <div>Player {playerNumber ? playerNumber : ''}</div>
       <div>Position {playerPosition ? playerPosition : ''}</div>
       <button onClick={resetGame}>Reset game</button>
-      <button onClick={throwDice}>Throw dice</button>
-      <p>Game is {gameOn ? "ON" : "OFF"}</p>
+
+      <div>
+      {!gameOn
+        ? <div>
+        <button onClick={assignPlayerNumber}>Assign player number</button>
+          </div>
+        : <p>game is ON</p>
+      }
+    </div>
+
+      <div>
+      {playerNumber == playerTurn && gameOn
+        ? <div>
+        <button onClick={throwDice}>Throw dice</button>
+          </div>
+        : <p>not your turn</p>
+      }
+    </div>
       <p>Player Turn {playerTurn}</p>
       <p>Player Balance {playerBalance}</p>
       <p>Player has Choice {playerHasChoice ? "Yes" : "No"}</p>
