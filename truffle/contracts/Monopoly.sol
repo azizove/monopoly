@@ -2,6 +2,7 @@
 pragma solidity >=0.4.22 <0.9.0;
 
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import "hardhat/Console.sol";
 import "./MoneyPoly.sol";
 
 contract Monopoly {
@@ -195,7 +196,7 @@ contract Monopoly {
         if(newPosition > 40) {newPosition = newPosition % 40;}
     }
 
-    function checkOwner() private view returns (bool) {
+    function hasOtherOwner() private view returns (bool) {
     uint8 position = players[msg.sender].playerPosition;
     bool otherOwner = false;
     if (houses[position-1].owner != players[msg.sender].playerNumber && houses[position-1].owner != 0) {
@@ -205,26 +206,58 @@ contract Monopoly {
 }
 
     function setPlayerHasChoice() private {
-        if (properties[players[msg.sender].playerPosition-1].isConstructible && moneyPolyContract.balanceOf(msg.sender) >= properties[players[msg.sender].playerPosition-1].constructionCost && !checkOwner()) {
-            playerHasChoice = true;            // on ne passe pas au tour suivant, car le joueur appelera buildHouse ou endTurn
-        } else {
+        if (properties[players[msg.sender].playerPosition-1].isConstructible && !hasOtherOwner()
+            && moneyPolyContract.balanceOf(msg.sender) >= properties[players[msg.sender].playerPosition-1].constructionCost) {
+            
+            // on ne passe pas au tour suivant, car le joueur appelera buildHouse ou endTurn
+            playerHasChoice = true;  
+
+        } else if (properties[players[msg.sender].playerPosition-1].isConstructible && hasOtherOwner()
+            && moneyPolyContract.balanceOf(msg.sender) >= properties[players[msg.sender].playerPosition-1].rentPrice) {
+            
             playerHasChoice = false;
-            playerTurn = (playerTurn) % 4 + 1; // si pas le choix, on passe au joueur suivant
+            payOwnerRent(properties[players[msg.sender].playerPosition-1].rentPrice, msg.sender, positionOwnerSWallet());
+            
+            // si pas le choix, on passe au joueur suivant
+            playerTurn = (playerTurn) % 4 + 1; 
             playerThrown = false;
         }
     }
 
-
-    function buildHouse() public onlyPlayer gameIsOn ItIsPlayerTurn {
+    modifier buildRequirment(uint constructionCost) {
         require(playerHasChoice == true, "Player must have choice");
-        uint256 constructionCost = properties[players[msg.sender].playerPosition-1].constructionCost;
         require(moneyPolyContract.balanceOf(msg.sender) >= constructionCost, "Not enough tokens");
+        _;
+    }
+
+    function buildHouse(uint constructionCost) public onlyPlayer gameIsOn ItIsPlayerTurn buildRequirment(constructionCost) {
         houses[players[msg.sender].playerPosition-1].owner = players[msg.sender].playerNumber; // assigne le proprio
         houses[players[msg.sender].playerPosition-1].amountOfHouses += 1; // incremente amountOfHouses
         // Brûler les jetons nécessaires pour la construction de la maison
         moneyPolyContract.burn(msg.sender, constructionCost);
         playerTurn = (playerTurn) % 4 + 1;
         playerThrown = false;
+    }
+
+    modifier fundsEnoughToRent(uint cost) {
+        if(moneyPolyContract.balanceOf(msg.sender) >= cost) {
+            console.log("Not enough tokens");
+            revert();
+            // TODO : remove revert() and implement : player pays all his balance to the owner and leaves the game();
+        } else {
+            _;
+        }
+    }
+
+    function payOwnerRent(uint amount, address tenant, address propertyOwner) private fundsEnoughToRent(amount) {
+        address payable tenantAddress = payable(tenant);
+        moneyPolyContract.transferFrom(tenantAddress, propertyOwner, amount);
+    }
+
+    function positionOwnerSWallet() private view returns (address) {
+        uint8 position = players[msg.sender].playerPosition;
+        uint8 ownerId = houses[position-1].owner;
+        return playerAddresses[ownerId-1];
     }
 
 
