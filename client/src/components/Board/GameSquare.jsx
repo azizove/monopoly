@@ -1,6 +1,5 @@
 import React from "react";
 import { BoardSection } from "./BoardSection";
-import { SquareConfigData } from "./SquareData";
 import { SquareInfo } from "./SquareInfo";
 import { SquareType } from "./SquareType";
 import boardData from "../../data/board.json";

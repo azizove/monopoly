@@ -1,6 +1,6 @@
 import React from "react";
 import { GameSquare } from "./GameSquare";
-import { PropertyCard } from "../Cards/PropertyCard";
+import { ProfileCard } from "../Profile/ProfileCard";
 
 export const GameBoard = () =>{
   const num_squares = Array.from(Array(40));
@@ -20,10 +20,6 @@ export const GameBoard = () =>{
 
         <div className="center-square square">
           <div className="center-txt">
-            <div>dice part</div>
-            <div>banker part</div>
-            <div><PropertyCard /></div>
-            <div>players cards</div>
           </div>
         </div>
       </div>

@@ -1,5 +1,4 @@
 import React from "react";
-import { SquareConfigData } from "./SquareData";
 import { SquareType } from "./SquareType";
 import { AirportDisplay } from "./squares/AirportDisplay";
 import { ChanceDisplay } from "./squares/ChanceDisplay";

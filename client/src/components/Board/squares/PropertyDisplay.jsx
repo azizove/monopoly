@@ -1,5 +1,4 @@
 import React from "react";
-import { NyThemeData } from "../NyTheme";
 import { ColorBar } from "./ColorBar";
 
 export const PropertyDisplay = ({ name, id }) => {
