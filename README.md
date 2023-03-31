@@ -1,43 +1,71 @@
-truffle migrate --network development
-git push origin smartcontract
+# Truffle React Hooks TypeScript Template
 
-
-# React Truffle Box
-
-This box comes with everything you need to start using Truffle to write, compile, test, and deploy smart contracts, and interact with them from a React app.
+This box comes with everything you need to start using smart contracts from a react app. This is as barebones as it gets, so nothing stands in your way.
 
 ## Installation
 
-First ensure you are in an empty directory.
+1. First of all, do a git clone to bring this repository locally
+    ```zsh
+    git clone https://github.com/YutaSugimura/truffle-react-typescript.git
+    ```
 
-Run the `unbox` command using 1 of 2 ways.
+Delete /test/simpleStorage.test.ts and /contracts/SimpleStorage.sol and create your own contract
 
-```sh
-# Install Truffle globally and run `truffle unbox`
-$ npm install -g truffle
-$ truffle unbox react
-```
+2. Installing truffle.
+    ```zsh
+     npm install -g truffle
+    ```
 
-```sh
-# Alternatively, run `truffle unbox` via npx
-$ npx truffle unbox react
-```
+3. Installing the library
+    ```zsh
+     yarn install
+     # or
+     npm i
+    ```
 
-Start the react dev server.
+4. Compiling Contracts.  
+    Compile the smart contract.
+    ```zsh
+    yarn compile
+    ```
 
-```sh
-$ cd client
-$ npm start
-```
+5. Run the development console.
+    ```javascript
+    truffle develop
 
-From there, follow the instructions on the hosted React app. It will walk you through using Truffle and Ganache to deploy the `SimpleStorage` contract, making calls to it, and sending transactions to change the contract's state.
+6. In the `client` directory, we run the React app. Smart contract changes must be manually recompiled and migrated.
+    ```zsh
+    # in another terminal (i.e. not in the truffle develop prompt)
+    cd client
+    # install dependencies
+    npm install
+    # or
+    yarn install
+    npm start
+    # or
+    yarn start
+    ```
 
-## FAQ
+7. Using ethereum-waffle to test smart contracts
+    ```zsh
+    yarn test
 
-- __How do I use this with Ganache (or any other network)?__
+    # or
+    npm run test
+    ```
 
-  The Truffle project is set to deploy to Ganache by default. If you'd like to change this, it's as easy as modifying the Truffle config file! Check out [our documentation on adding network configurations](https://trufflesuite.com/docs/truffle/reference/configuration/#networks). From there, you can run `truffle migrate` pointed to another network, restart the React dev server, and see the change take place.
+8. Jest is included for testing React components. Compile your contracts before running Jest, or you may receive some file not found errors.
+    ```zsh
+    # ensure you are inside the client directory when running this
+    npm run test
+    # or
+    yarn test
+    ```
 
-- __Where can I find more resources?__
-
-  This Box is a sweet combo of [Truffle](https://trufflesuite.com) and [Webpack](https://webpack.js.org). Either one would be a great place to start!
+9. To build the application for production, use the build script. A production build will be in the `client/build` folder.
+    ```zsh
+    # ensure you are inside the client directory when running this
+    npm run build
+    # or
+    yarn build
+    ```
