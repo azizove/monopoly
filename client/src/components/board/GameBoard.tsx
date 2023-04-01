@@ -1,4 +1,5 @@
 import React from "react";
+import DiceCubes from "../dice/DiceCubes";
 import { GameSquare } from "./GameSquare";
 
 export default function GameBoard() {
@@ -19,7 +20,7 @@ export default function GameBoard() {
 
 
         <div className="center-square square">
-          
+          <DiceCubes/>
         </div>
       </div>
     </React.Fragment>

@@ -10060,6 +10060,11 @@ react-dev-utils@^11.0.3:
     strip-ansi "6.0.0"
     text-table "0.2.0"
 
+react-dice-complete@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-dice-complete/-/react-dice-complete-2.1.0.tgz#842c70dbdd7f4a933c0491bd268b3bf8d2084934"
+  integrity sha512-/aqe7yEyqnDKLMKAF7XfNP7MIx/OTjXA8/ndHGObD7mWYm1Uc0yTkyYdaUV+I/n/7oIW06KwPdHzekUrAbNk8w==
+
 react-dom@^17.0.2:
   version "17.0.2"
   resolved "https://registry.npmjs.org/react-dom/-/react-dom-17.0.2.tgz"
