@@ -1,44 +1,42 @@
 import React from "react";
-import { SquareConfigData } from "./SquareData";
-import { SquareType } from "./SquareType";
 import { AirportDisplay } from "./squares/AirportDisplay";
 import { ChanceDisplay } from "./squares/ChanceDisplay";
 import { PropertyDisplay } from "./squares/PropertyDisplay";
 import { CentralParkDisplay } from "./squares/CentralParkDisplay";
 import { GoDisplay } from "./squares/GoDisplay";
 import { UtilityDisplay } from "./squares/UtilityDisplay";
-
+import { SquareInterface, SquareType } from "../../models";
 
 interface Props {
-    id: number;
+    square: SquareInterface;
 }
 
-export const SquareInfo: React.FC<Props> = ({ id }) => {
+export const SquareInfo: React.FC<Props> = ({ square }) => {
 
-    const type: SquareType | undefined = SquareConfigData.get(id)?.type;
+    const {name, type} = square;
 
     const getInfo = () => {
         if (type === SquareType.Airport) {
-            return <AirportDisplay id={id} />
+            return <AirportDisplay name={name} />
         }
         if (type === SquareType.Chance) {
-            return <ChanceDisplay id={id} />
+            return <ChanceDisplay name={name} />
         }
         if (type === SquareType.CentralPark) {
-            return <CentralParkDisplay id={id} />
+            return <CentralParkDisplay name={name} />
         }
         if (type === SquareType.Go) {
-            return <GoDisplay id={id} />
+            return <GoDisplay name={name} />
         }
         if (type === SquareType.Utility) {
-            return <UtilityDisplay id={id} />
+            return <UtilityDisplay name={name} />
         }
 
         if (type === SquareType.Jail || type === SquareType.GoToJail) {
             return null;
         }
 
-        return <PropertyDisplay id={id} />
+        return <PropertyDisplay square={square} />
     };
 
 

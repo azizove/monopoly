@@ -1,17 +1,15 @@
 import React from "react";
-import { BoardSection } from "./BoardSection";
-import { SquareConfigData } from "./SquareData";
+import { BoardSection, SquareType } from "../../models";
+import boardData from "../../data/board.json";
 import { SquareInfo } from "./SquareInfo";
-import { SquareType } from "./SquareType";
 
 interface Props {
   id: number;
 }
 
 export const GameSquare: React.FC<Props> = ({ id }) => {
-
-  const section: BoardSection = SquareConfigData.get(id)?.section!;
-  const squareType: SquareType = SquareConfigData.get(id)?.type!;
+  const section: BoardSection = boardData[id]?.section!;
+  const squareType: SquareType = boardData[id]?.type!;
 
   const sectionMap = new Map<BoardSection, string>([
     [BoardSection.Top, "top"], [BoardSection.Right, "right"], [BoardSection.Left, "left"], [BoardSection.Bottom, "bottom"]
@@ -39,7 +37,7 @@ export const GameSquare: React.FC<Props> = ({ id }) => {
   return (
     <div className={getSquareClassName()} id={getSquareId()}>
       <div className={getContainerClassName()}>
-        <SquareInfo id={id} />
+        <SquareInfo square={boardData[id]} />
       </div>
     </div>
   );

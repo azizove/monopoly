@@ -1,20 +1,20 @@
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faQuestion } from '@fortawesome/free-solid-svg-icons'
+import { faHandPointLeft } from '@fortawesome/free-solid-svg-icons'
 
 interface Props {
-    id: number;
+    name: string;
 }
 
-export const ChanceDisplay: React.FC<Props> = ({ id }) => {
+export const GoDisplay: React.FC<Props> = ({ name }) => {
 
     return (
         <React.Fragment>
             <div className="blank"></div>
             <div className="icon">
-                {/* <FontAwesomeIcon icon={faQuestion} size="3x" color="orange" /> */}
+                {/* <FontAwesomeIcon icon={faHandPointLeft} color="green" /> */}
             </div>
-            <div className="square-name"> CHANCE</div>
+            <div className="square-name">GO</div>
         </React.Fragment>
     );
 

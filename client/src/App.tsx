@@ -5,7 +5,7 @@ import json from './contracts/Monopoly.json';
 import useWeb3 from './hooks/web3';
 
 
-import GameBoard from "./client/GameBoard";
+import GameBoard from "./components/board/GameBoard";
 import CssBaseline from "@material-ui/core/CssBaseline";
 const App: React.VFC = () => {
   const { isLoading, isWeb3, web3, accounts } = useWeb3();

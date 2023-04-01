@@ -1,10 +1,10 @@
 import React from "react";
 
 interface Props {
-    id: number;
+    name: string;
 }
 
-export const CentralParkDisplay: React.FC<Props> = ({ id }) => {
+export const CentralParkDisplay: React.FC<Props> = ({ name }) => {
 
     return (
         <React.Fragment>

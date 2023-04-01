@@ -1,5 +1,4 @@
-import { SquareType } from "./SquareType";
-import { BoardSection } from "./BoardSection";
+import { SquareType, BoardSection } from "../../models";
 
 interface SquareConfigData {
   readonly type: SquareType;

@@ -4,12 +4,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlane } from '@fortawesome/free-solid-svg-icons'
 
 interface Props {
-    id: number;
+    name: string;
 }
 
-export const AirportDisplay: React.FC<Props> = ({ id }) => {
-
-    const txt: string | undefined = NyThemeData.get(id)?.name;
+export const AirportDisplay: React.FC<Props> = ({ name }) => {
 
     return (
         <React.Fragment>
@@ -17,7 +15,7 @@ export const AirportDisplay: React.FC<Props> = ({ id }) => {
             <div className="icon">
                 {/* <FontAwesomeIcon icon={faPlane} size="3x" /> */}
             </div>
-            <div className="square-name"> {txt}</div>
+            <div className="square-name"> {name}</div>
         </React.Fragment>
     );
 
