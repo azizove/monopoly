@@ -12,13 +12,21 @@ export const GameSquare: React.FC<Props> = ({ id }) => {
   const squareType: SquareType = boardData[id]?.type!;
 
   const sectionMap = new Map<BoardSection, string>([
-    [BoardSection.Top, "top"], [BoardSection.Right, "right"], [BoardSection.Left, "left"], [BoardSection.Bottom, "bottom"]
+    [BoardSection.Top, "top"],
+    [BoardSection.Right, "right"],
+    [BoardSection.Left, "left"],
+    [BoardSection.Bottom, "bottom"],
   ]);
 
   const squareTypeClass = new Map<SquareType, string>([
-    [SquareType.Airport, "airport"], [SquareType.Chance, "chance"], [SquareType.Go, "passgo"],
-    [SquareType.GoToJail, "go-to-jail"], [SquareType.Jail, "jail"], [SquareType.Property, "property"],
-    [SquareType.CentralPark, "central-park"], [SquareType.Utility, "utility"]
+    [SquareType.Airport, "airport"],
+    [SquareType.Chance, "chance"],
+    [SquareType.Go, "passgo"],
+    [SquareType.GoToJail, "go-to-jail"],
+    [SquareType.Jail, "jail"],
+    [SquareType.Property, "property"],
+    [SquareType.CentralPark, "central-park"],
+    [SquareType.Utility, "utility"],
   ]);
 
   const getContainerClassName = () => {
@@ -33,13 +41,15 @@ export const GameSquare: React.FC<Props> = ({ id }) => {
     return "game-square-" + id;
   };
 
-
-  return (
-    <div className={getSquareClassName()} id={getSquareId()}>
-      <div className={getContainerClassName()}>
-        <SquareInfo square={boardData[id]} />
+  const getSquare = () => {
+    return (
+      <div className={getSquareClassName()} id={getSquareId()}>
+        <div className={getContainerClassName()}>
+          <SquareInfo square={boardData[id]} />
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
+  return boardData[id] ? getSquare() : null;
 };
