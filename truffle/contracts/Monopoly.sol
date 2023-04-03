@@ -216,7 +216,7 @@ contract Monopoly {
             && moneyPolyContract.balanceOf(msg.sender) >= properties[players[msg.sender].playerPosition-1].rentPrice) {
             
             playerHasChoice = false;
-            payOwnerRent(properties[players[msg.sender].playerPosition-1].rentPrice, msg.sender, positionOwnerSWallet());
+            payOwnerRent(properties[players[msg.sender].playerPosition-1].rentPrice * houses[players[msg.sender].playerPosition-1].amountOfHouses, msg.sender, positionOwnerSWallet());
             
             // si pas le choix, on passe au joueur suivant
             playerTurn = (playerTurn) % 4 + 1; 
@@ -224,16 +224,17 @@ contract Monopoly {
         }
     }
 
-    modifier buildRequirment(uint constructionCost) {
+    modifier buildRequirment() {
         require(playerHasChoice == true, "Player must have choice");
-        require(moneyPolyContract.balanceOf(msg.sender) >= constructionCost, "Not enough tokens");
+        require(moneyPolyContract.balanceOf(msg.sender) >= properties[players[msg.sender].playerPosition-1].constructionCost, "Not enough tokens");
         _;
     }
 
-    function buildHouse(uint constructionCost) public onlyPlayer gameIsOn ItIsPlayerTurn buildRequirment(constructionCost) {
+    function buildHouse() public onlyPlayer gameIsOn ItIsPlayerTurn buildRequirment() {
         houses[players[msg.sender].playerPosition-1].owner = players[msg.sender].playerNumber; // assigne le proprio
         houses[players[msg.sender].playerPosition-1].amountOfHouses += 1; // incremente amountOfHouses
         // Brûler les jetons nécessaires pour la construction de la maison
+        uint256 constructionCost = properties[players[msg.sender].playerPosition-1].constructionCost;
         moneyPolyContract.burn(msg.sender, constructionCost);
         playerTurn = (playerTurn) % 4 + 1;
         playerThrown = false;
