@@ -1,46 +1,55 @@
 import {expect, use} from 'chai';
-import {Contract, Wallet} from 'ethers';
+import {Contract, Event, Transaction, Wallet} from 'ethers';
 import {deployContract, MockProvider, solidity} from 'ethereum-waffle';
 import Monopoly from '../build/Monopoly.json';
 import MoneyPoly from '../build/MoneyPoly.json';
 
 use(solidity);
+
 type Player = { playerPosition: number; playerNumber: number };
 type Property = { isConstructible: boolean; constructionCost: number; rentPrice: number };
 type House = { position: number; owner: number };
 
 interface MonopolyContract extends Contract {
-	assignPlayerNumber(): Promise<void>;
+	assignPlayerNumber(): Promise<void> | any;
 
-	resetGame(): Promise<void>;
+	resetGame(): Promise<void> | any;
 
-	getPlayerAddress(playerNumber: number): Promise<string>;
+	getPlayerAddress(playerNumber: number): Promise<string> | any;
 
-	getGameOn(): Promise<boolean>;
+	getGameOn(): Promise<Transaction> | any;
 
-	getPlayerTurn(): Promise<number>;
+	getPlayerTurn(): Promise<number> | any;
 
-	throwDice(): Promise<void>;
+	throwDice(): Promise<void> | any;
 
-	buildHouse(): Promise<void>;
+	buildHouse(): Promise<void> | any;
 
-	endTurn(): Promise<void>;
+	endTurn(): Promise<void> | any;
 
-	getHouses(): Promise<number[][]>;
+	getHouses(): Promise<number[][]> | any;
 
-	players(player: string): Promise<Player>;
+	players(player: string): Promise<Player> | any;
 
-	properties(index: number): Promise<Property>;
+	properties(index: number): Promise<Property> | any;
 
-	houses(index: number): Promise<House>;
+	houses(index: number): Promise<House> | any;
 }
 
 function connectMonopoly(contract: Contract, wallet: Wallet) {
 	return contract.connect(wallet) as MonopolyContract;
 }
 
+function startGame(monopoly: MonopolyContract, playerWallets: Wallet[]) {
+	return Promise.all(playerWallets.map(async (wallet) => {
+		let tx = await connectMonopoly(monopoly, wallet).assignPlayerNumber();
+		await tx.wait();
+	}));
+}
+
 describe('Monopoly contract', () => {
 	const [playerWallet1, playerWallet2, playerWallet3, playerWallet4] = new MockProvider().getWallets();
+	let playerWallets = [playerWallet1, playerWallet2, playerWallet3, playerWallet4];
 	let monopoly: MonopolyContract;
 	let moneyPoly: Contract;
 
@@ -62,21 +71,14 @@ describe('Monopoly contract', () => {
 	});
 
 	it('should change game status to true when 4 players are assigned', async function () {
-		await connectMonopoly(monopoly, playerWallet1).assignPlayerNumber();
-		await connectMonopoly(monopoly, playerWallet2).assignPlayerNumber();
-		await connectMonopoly(monopoly, playerWallet3).assignPlayerNumber();
-		await connectMonopoly(monopoly, playerWallet4).assignPlayerNumber();
-
+		await startGame(monopoly, playerWallets);
 		let gameOn = await monopoly.getGameOn();
 
 		expect(gameOn).to.equal(true);
 	});
 
 	it('should revert game status to false after resetGame()', async function () {
-		await connectMonopoly(monopoly, playerWallet1).assignPlayerNumber();
-		await connectMonopoly(monopoly, playerWallet2).assignPlayerNumber();
-		await connectMonopoly(monopoly, playerWallet3).assignPlayerNumber();
-		await connectMonopoly(monopoly, playerWallet4).assignPlayerNumber();
+		await startGame(monopoly, playerWallets);
 		await connectMonopoly(monopoly, playerWallet1).resetGame();
 
 		let gameOn = await monopoly.getGameOn();
@@ -85,12 +87,7 @@ describe('Monopoly contract', () => {
 	});
 
 	it('should allow throwDice() only for registered players, when the game is on and if its player turn', async function () {
-		await connectMonopoly(monopoly, playerWallet1).assignPlayerNumber();
-		await connectMonopoly(monopoly, playerWallet2).assignPlayerNumber();
-		await connectMonopoly(monopoly, playerWallet3).assignPlayerNumber();
-		await connectMonopoly(monopoly, playerWallet4).assignPlayerNumber();
-
-		// Ensure the game is on
+		await startGame(monopoly, playerWallets);
 		expect(await monopoly.getGameOn()).to.be.true;
 
 		// Player 1 can throw dice
@@ -110,13 +107,63 @@ describe('Monopoly contract', () => {
 		await connectMonopoly(monopoly, playerWallet2).endTurn();
 	});
 
-	// it('should update player position after calling throwDice()', async function () {
-	// 	// Add test logic
-	// });
+	it('should prevent a player from throwing dive twice in a row', async function () {
+		await startGame(monopoly, playerWallets);
+		expect(await monopoly.getGameOn()).to.be.true;
 
-	// it('should allow a player to build a house when they have the choice and enough tokens', async function () {
-	// 	// Add test logic
-	// });
+		// Player 1 throws dice
+		let tx = await connectMonopoly(monopoly, playerWallet1).throwDice();
+		await tx.wait();
+
+		// Player 1 can't throw dice again
+		await expect(connectMonopoly(monopoly, playerWallet1).throwDice()).to.be.revertedWith("You have already thrown the dice.");
+	});
+
+	it('should update player position after calling throwDice()', async function () {
+		await startGame(monopoly, playerWallets);
+		expect(await monopoly.getGameOn()).to.be.true;
+
+		// Check initial player positions
+		let player1 = await monopoly.players(playerWallet1.address);
+		let player2 = await monopoly.players(playerWallet2.address);
+
+		let player1Position = player1.playerPosition;
+		let player2Position = player2.playerPosition;
+
+		expect(player1Position).to.equal(1);
+		expect(player2Position).to.equal(1);
+
+		// // Player 1 throws dice and updates position
+		const tx1 = await monopoly.connect(playerWallet1).throwDice();
+		const receipt1 = await tx1.wait();
+		const diceThrownEvent1 = receipt1.events.filter((event: Event) => event.event === 'DiceThrown');
+
+		player1Position = diceThrownEvent1[0].args.playerPosition.toNumber();
+		player1 = await monopoly.players(playerWallet1.address);
+
+		expect(player1.playerPosition).to.equal(player1Position);
+	});
+
+	it('should allow a player to build a house when they have the choice and enough tokens', async function () {
+		await startGame(monopoly, playerWallets);
+		expect(await monopoly.getGameOn()).to.be.true;
+
+		const tx1 = await monopoly.connect(playerWallet1).throwDice();
+		const receipt1 = await tx1.wait();
+		const diceThrownEvent1 = receipt1.events.filter((event: Event) => event.event === 'DiceThrown');
+
+		const playerTurn = await monopoly.getPlayerTurn();
+		console.log("playerTurn", playerTurn.toNumber())
+
+		let tx = await monopoly.connect(playerWallet1).buildHouse();
+		await tx.wait();
+
+		let player1Position = diceThrownEvent1[0].args.playerPosition.toNumber();
+		let houses = await connectMonopoly(monopoly, playerWallet1).getHouses();
+		let houseOnPositionOwner = houses[player1Position - 1][0].toNumber();
+
+		expect(houseOnPositionOwner).to.equal(1);
+	});
 
 	// it('should burn player tokens after building a house', async function () {
 	// 	// Add test logic
