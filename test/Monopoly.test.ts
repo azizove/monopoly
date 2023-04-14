@@ -40,7 +40,7 @@ function connectMonopoly(contract: Contract, wallet: Wallet) {
 	return contract.connect(wallet) as MonopolyContract;
 }
 
-function startGame(monopoly: MonopolyContract, playerWallets: Wallet[]) {
+async function startGame(monopoly: MonopolyContract, playerWallets: Wallet[]) {
 	return Promise.all(playerWallets.map(async (wallet) => {
 		let tx = await connectMonopoly(monopoly, wallet).assignPlayerNumber();
 		await tx.wait();
@@ -152,9 +152,6 @@ describe('Monopoly contract', () => {
 		const receipt1 = await tx1.wait();
 		const diceThrownEvent1 = receipt1.events.filter((event: Event) => event.event === 'DiceThrown');
 
-		const playerTurn = await monopoly.getPlayerTurn();
-		console.log("playerTurn", playerTurn.toNumber())
-
 		let tx = await monopoly.connect(playerWallet1).buildHouse();
 		await tx.wait();
 
@@ -169,11 +166,16 @@ describe('Monopoly contract', () => {
 	// 	// Add test logic
 	// });
 
-	// it('should allow a player to end their turn when they have the choice', async function () {
-	// 	// Add test logic
-	// });
+	it('should allow a player to end their turn when they have the choice', async function () {
+		await startGame(monopoly, playerWallets);
+		expect(await monopoly.getGameOn()).to.be.true;
 
-	// it('should represent houses correctly on the board', async function () {
-	// 	// Add test logic
-	// });
+		let tx = await monopoly.connect(playerWallet1).throwDice();
+		await tx.wait();
+
+		tx = await monopoly.connect(playerWallet1).endTurn();
+		await tx.wait();
+
+		await expect(connectMonopoly(monopoly, playerWallet1).endTurn()).to.be.revertedWith("Not your turn.");
+	});
 });
