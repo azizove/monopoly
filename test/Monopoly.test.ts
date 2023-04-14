@@ -5,6 +5,9 @@ import Monopoly from '../build/Monopoly.json';
 import MoneyPoly from '../build/MoneyPoly.json';
 
 use(solidity);
+type Player = { playerPosition: number; playerNumber: number };
+type Property = { isConstructible: boolean; constructionCost: number; rentPrice: number };
+type House = { position: number; owner: number };
 
 interface MonopolyContract extends Contract {
 	assignPlayerNumber(): Promise<void>;
@@ -25,11 +28,11 @@ interface MonopolyContract extends Contract {
 
 	getHouses(): Promise<number[][]>;
 
-	players(player: string): Promise<{ playerPosition: number; playerNumber: number }>;
+	players(player: string): Promise<Player>;
 
-	properties(index: number): Promise<{ isConstructible: boolean; constructionCost: number; rentPrice: number }>;
+	properties(index: number): Promise<Property>;
 
-	houses(index: number): Promise<{ position: number; owner: number }>;
+	houses(index: number): Promise<House>;
 }
 
 function connectMonopoly(contract: Contract, wallet: Wallet) {
@@ -58,34 +61,71 @@ describe('Monopoly contract', () => {
 		expect(player2.playerNumber).to.equal(2);
 	});
 
-	// it('should change game status to true when 4 players are assigned', async function () {
-	// 	// Add test logic
-	// });
+	it('should change game status to true when 4 players are assigned', async function () {
+		await connectMonopoly(monopoly, playerWallet1).assignPlayerNumber();
+		await connectMonopoly(monopoly, playerWallet2).assignPlayerNumber();
+		await connectMonopoly(monopoly, playerWallet3).assignPlayerNumber();
+		await connectMonopoly(monopoly, playerWallet4).assignPlayerNumber();
 
-	// it('should revert game status to false after resetGame()', async function () {
-	// 	// Add test logic
-	// });
-	//
-	// it('should allow throwDice() only for registered players and when the game is on', async function () {
-	// 	// Add test logic
-	// });
-	//
+		let gameOn = await monopoly.getGameOn();
+
+		expect(gameOn).to.equal(true);
+	});
+
+	it('should revert game status to false after resetGame()', async function () {
+		await connectMonopoly(monopoly, playerWallet1).assignPlayerNumber();
+		await connectMonopoly(monopoly, playerWallet2).assignPlayerNumber();
+		await connectMonopoly(monopoly, playerWallet3).assignPlayerNumber();
+		await connectMonopoly(monopoly, playerWallet4).assignPlayerNumber();
+		await connectMonopoly(monopoly, playerWallet1).resetGame();
+
+		let gameOn = await monopoly.getGameOn();
+
+		expect(gameOn).to.equal(false);
+	});
+
+	it('should allow throwDice() only for registered players, when the game is on and if its player turn', async function () {
+		await connectMonopoly(monopoly, playerWallet1).assignPlayerNumber();
+		await connectMonopoly(monopoly, playerWallet2).assignPlayerNumber();
+		await connectMonopoly(monopoly, playerWallet3).assignPlayerNumber();
+		await connectMonopoly(monopoly, playerWallet4).assignPlayerNumber();
+
+		// Ensure the game is on
+		expect(await monopoly.getGameOn()).to.be.true;
+
+		// Player 1 can throw dice
+		let currentTurn = await monopoly.getPlayerTurn();
+		expect(currentTurn).to.equal(1);
+		await expect(connectMonopoly(monopoly, playerWallet1).throwDice()).to.not.be.reverted;
+		await connectMonopoly(monopoly, playerWallet1).endTurn();
+
+		// Player 2 can throw dice
+		currentTurn = await monopoly.getPlayerTurn();
+		expect(currentTurn).to.equal(2);
+		await expect(connectMonopoly(monopoly, playerWallet2).throwDice()).to.not.be.reverted;
+
+		// Player 1 can't throw dice again
+		await expect(connectMonopoly(monopoly, playerWallet1).throwDice()).to.be.revertedWith("Not your turn.");
+
+		await connectMonopoly(monopoly, playerWallet2).endTurn();
+	});
+
 	// it('should update player position after calling throwDice()', async function () {
 	// 	// Add test logic
 	// });
-	//
+
 	// it('should allow a player to build a house when they have the choice and enough tokens', async function () {
 	// 	// Add test logic
 	// });
-	//
+
 	// it('should burn player tokens after building a house', async function () {
 	// 	// Add test logic
 	// });
-	//
+
 	// it('should allow a player to end their turn when they have the choice', async function () {
 	// 	// Add test logic
 	// });
-	//
+
 	// it('should represent houses correctly on the board', async function () {
 	// 	// Add test logic
 	// });
