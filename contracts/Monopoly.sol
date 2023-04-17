@@ -8,7 +8,7 @@ import "./MoneyPoly.sol";
 contract Monopoly {
     using EnumerableSet for EnumerableSet.AddressSet;
 
-    MoneyPoly public moneyPolyContract;
+    MoneyPoly private moneyPolyContract;
 
     struct Player {
         uint8 playerPosition;
@@ -51,10 +51,9 @@ contract Monopoly {
     event NewPlayer(address indexed player, uint8 indexed number);
     event DiceThrown(address indexed player, uint8 diceValue, uint8 playerPosition, uint8 playerTurn, bool playerHasChoice);
 
-    constructor(address _adminAddress, address _moneyPolyAddress) {
-    adminAddress = _adminAddress;
-    // Initialiser le contrat MoneyPoly en utilisant son adresse
-    moneyPolyContract = MoneyPoly(_moneyPolyAddress);
+    constructor(MoneyPoly _moneyPoly) {
+    // Initialiser le contrat MoneyPoly
+    moneyPolyContract = _moneyPoly;
 
         properties.push(NOT_AVAILABLE);
         properties.push(AVAILABLE_1000);
@@ -101,12 +100,13 @@ contract Monopoly {
 
             // TEST5
                for (uint8 i = 0; i < 40; i++) {
-            House memory newHouse = House(0, 0);
-            houses.push(newHouse);
+                House memory newHouse = House(0, 0);
+                houses.push(newHouse);
             }           
-}
+    }
+
     function generateRandomNumber() private view returns (uint256) {
-    return uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, msg.sender))) % 6 + 1;
+        return uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, msg.sender))) % 6 + 1;
     }
 
     function assignPlayerNumber() public {
@@ -162,8 +162,8 @@ contract Monopoly {
     }
 
     modifier onlyPlayer {
-    require(players[msg.sender].playerNumber != 0, "Only registered players can throw the dice.");
-    _;
+        require(players[msg.sender].playerNumber != 0, "Only registered players can throw the dice.");
+        _;
     }
 
     modifier gameIsOn {
@@ -197,13 +197,13 @@ contract Monopoly {
     }
 
     function hasOtherOwner() private view returns (bool) {
-    uint8 position = players[msg.sender].playerPosition;
-    bool otherOwner = false;
-    if (houses[position-1].owner != players[msg.sender].playerNumber && houses[position-1].owner != 0) {
-        otherOwner = true;
+        uint8 position = players[msg.sender].playerPosition;
+        bool otherOwner = false;
+        if (houses[position-1].owner != players[msg.sender].playerNumber && houses[position-1].owner != 0) {
+            otherOwner = true;
+        }
+        return otherOwner;
     }
-    return otherOwner;
-}
 
     function setPlayerHasChoice() private {
         if (properties[players[msg.sender].playerPosition-1].isConstructible && !hasOtherOwner()
@@ -240,19 +240,23 @@ contract Monopoly {
         playerThrown = false;
     }
 
-    modifier fundsEnoughToRent(uint cost) {
+    modifier fundsEnoughToRent(uint cost, address tenant, address propertyOwner) {
         if(moneyPolyContract.balanceOf(msg.sender) >= cost) {
             console.log("Not enough tokens");
-            revert();
-            // TODO : remove revert() and implement : player pays all his balance to the owner and leaves the game();
+            
+            console.log("Pay all balance to tenant");
+            moneyPolyContract.transferFrom(tenant, propertyOwner, cost);
+            
+            console.log("Remove player from game");
+            //removePlayerFromGame(tenant);
         } else {
             _;
         }
     }
 
-    function payOwnerRent(uint amount, address tenant, address propertyOwner) private fundsEnoughToRent(amount) {
+    function payOwnerRent(uint amount, address tenant, address propertyOwner) private fundsEnoughToRent(amount, tenant, propertyOwner) {
         address payable tenantAddress = payable(tenant);
-        moneyPolyContract.transferFrom(tenantAddress, propertyOwner, amount);
+        transferTokens(tenantAddress, propertyOwner, amount);
     }
 
     function positionOwnerSWallet() private view returns (address) {
@@ -274,14 +278,27 @@ contract Monopoly {
     }
 
     function getAllPlayerPositions() public view returns (uint8[] memory) {
-    uint8[] memory positions = new uint8[](playerCount);
+        uint8[] memory positions = new uint8[](playerCount);
 
-    for (uint8 i = 0; i < playerCount; i++) {
-        positions[i] = players[playerAddresses[i]].playerPosition;
+        for (uint8 i = 0; i < playerCount; i++) {
+            positions[i] = players[playerAddresses[i]].playerPosition;
+        }
+
+        return positions;
     }
+    
+    function transferTokens(address _from, address _to, uint256 _value) private returns (bool success) {
+        require(_from != address(0), "Invalid 'from' address");
+        require(_to != address(0), "Invalid 'to' address");
+        require(_value > 0, "Invalid token amount");
 
-    return positions;
-}
+        // Check if the sender has enough tokens
+        require(moneyPolyContract.balanceOf(_from) >= _value, "Insufficient token balance");
 
+        // Transfer tokens from the sender to the receiver
+        moneyPolyContract.transfer(_to, _value);
+
+        return true;
+    }
 
 }
