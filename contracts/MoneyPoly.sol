@@ -20,4 +20,11 @@ contract MoneyPoly is ERC20, ERC20Burnable {
     _burn(account, amount);
     }
 
+    function transferFrom(address from, address to, uint amount) public override returns(bool) {
+        address spender = _msgSender();
+        _spendAllowance(from, spender, amount);
+        _transfer(from, to, amount);
+        return true;
+    }
+
 }
