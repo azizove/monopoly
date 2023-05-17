@@ -2,7 +2,7 @@
 pragma solidity >=0.4.22 <0.9.0;
 
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import "hardhat/Console.sol";
+//import "./node_modules/hardhat/Console.sol";
 import "./MoneyPoly.sol";
 
 contract Monopoly {
@@ -29,6 +29,7 @@ contract Monopoly {
     uint8 public playerCount = 0;
     mapping(address => Player) public players;
     bool public gameOn = false;
+    // todo revert to introduce in constructor
     address public adminAddress;
     uint8 public playerTurn = 1;
     Property[] public properties;
@@ -51,9 +52,10 @@ contract Monopoly {
     event NewPlayer(address indexed player, uint8 indexed number);
     event DiceThrown(address indexed player, uint8 diceValue, uint8 playerPosition, uint8 playerTurn, bool playerHasChoice);
 
-    constructor(MoneyPoly _moneyPoly) {
-    // Initialiser le contrat MoneyPoly
-    moneyPolyContract = _moneyPoly;
+    constructor(address _adminAddress, address _moneyPolyAddress) {
+    adminAddress = _adminAddress;
+    // Initialiser le contrat MoneyPoly en utilisant son adresse
+    moneyPolyContract = MoneyPoly(_moneyPolyAddress);
 
         properties.push(NOT_AVAILABLE);
         properties.push(AVAILABLE_1000);
@@ -96,6 +98,7 @@ contract Monopoly {
         properties.push(NOT_AVAILABLE);
         properties.push(AVAILABLE_8000);
 
+        // todo find a way to remove this
         playerAddresses = new address[](4); // initialiser le tableau playerAddresses avec une taille de 4
 
             // TEST5
@@ -242,12 +245,12 @@ contract Monopoly {
 
     modifier fundsEnoughToRent(uint cost, address tenant, address propertyOwner) {
         if(moneyPolyContract.balanceOf(msg.sender) >= cost) {
-            console.log("Not enough tokens");
+            //console.log("Not enough tokens");
             
-            console.log("Pay all balance to tenant");
+            //console.log("Pay all balance to tenant");
             moneyPolyContract.transferFrom(tenant, propertyOwner, cost);
             
-            console.log("Remove player from game");
+            //console.log("Remove player from game");
             //removePlayerFromGame(tenant);
         } else {
             _;
@@ -296,7 +299,7 @@ contract Monopoly {
         require(moneyPolyContract.balanceOf(_from) >= _value, "Insufficient token balance");
 
         // Transfer tokens from the sender to the receiver
-        moneyPolyContract.transfer(_to, _value);
+        moneyPolyContract.transferFrom(_from, _to, _value);
 
         return true;
     }
