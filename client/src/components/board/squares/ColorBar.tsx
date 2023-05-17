@@ -1,5 +1,5 @@
 import React from "react";
-import { SquareConfigData, squareGroupColorMap } from "../SquareData";
+import { squareGroupColorMap } from "../SquareData";
 
 interface Props {
     groupId: number;

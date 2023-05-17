@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext } from "react";
 import React from 'react';
-import useWeb3 from "../../hooks/web3";
 import useContract from "../../hooks/contract";
 
 function Demo() {
@@ -11,8 +10,7 @@ function Demo() {
   const [gameOn, setGameOn] = useState(false);
   const [playerTurn, setPlayerTurn] = useState(1);
   const [playerBalance, setPlayerBalance] = useState(0);
-  const { isLoading, isWeb3, web3, accounts } = useWeb3();
-  const { monopolyContract, moneyPolyContract } = useContract();
+  const { monopolyContract, moneyPolyContract, account } = useContract();
   const [playerHasChoice, setPlayerHasChoice] = useState(false);
   const [houses, setHouses] = useState([]);
   const [allPlayerPositions, setAllPlayerPositions] = useState([]);
@@ -20,8 +18,9 @@ function Demo() {
   //   -----   FUNCTIONS   -----
   //   Player Number
   const assignPlayerNumber = async () => {
-    await monopolyContract.methods.assignPlayerNumber().send({ from: accounts[0] });
-    const player = await monopolyContract.methods.players(accounts[0]).call();
+      if(!monopolyContract) return;
+      await monopolyContract.methods.assignPlayerNumber().send({ from: account });
+    const player = await monopolyContract.methods.players(account).call();
     if (player.playerNumber !== '0') {
       setPlayerNumber(player.playerNumber);
     }
@@ -29,58 +28,63 @@ function Demo() {
 
   useEffect(() => {
     const getPlayerNumber = async () => {
-      const player = await monopolyContract.methods.players(accounts[0]).call();
-      console.log("playerNumber is : ", player);
-    //   if (player.playerNumber !== '0') {
-    //     setPlayerNumber(player.playerNumber);
-    //   }
+      if(!monopolyContract) return;
+      const player = await monopolyContract.methods.players(account).call();
+      if (player.playerNumber !== '0') {
+        setPlayerNumber(player.playerNumber);
+      }
     };
     if(monopolyContract) getPlayerNumber();
-  }, [accounts, monopolyContract]);
+  }, [account, monopolyContract]);
 
   //   Player Position
-//   useEffect(() => {
-//     const getPlayerPosition = async () => {
-//       const player = await monopolyContract.methods.players(accounts[0]).call();
-//         setPlayerPosition(player.playerPosition);
-//     };
-//     getPlayerPosition();
-//   }, [accounts, monopolyContract]);
+  useEffect(() => {
+    const getPlayerPosition = async () => {
+      if(!monopolyContract) return;
+      const player = await monopolyContract.methods.players(account).call();
+        setPlayerPosition(player.playerPosition);
+    };
+    getPlayerPosition();
+  }, [account, monopolyContract]);
 
   //   Game On
-//   useEffect(() => {
-//     const fetchGameOn = async () => {
-//       const gameOnValue = await monopolyContract.methods.getGameOn().call();
-//       console.log("gameOnValue is on : ", gameOnValue); 
-//       setGameOn(gameOnValue);
-//     };
-//     fetchGameOn();
-//   }, [accounts, monopolyContract, playerNumber]);
+  useEffect(() => {
+    const fetchGameOn = async () => {
+      if(!monopolyContract) return;
+      const gameOnValue = await monopolyContract.methods.getGameOn().call();
+      console.log("gameOnValue is on : ", gameOnValue); 
+      setGameOn(gameOnValue);
+    };
+    fetchGameOn();
+  }, [account, monopolyContract, playerNumber]);
 
     //   Player Turn
-//   useEffect(() => {
-//     const fetchPlayerTurn = async () => {
-//       const playerTurnValue = await monopolyContract.methods.getPlayerTurn().call();
-//       console.log("playerTurn is : ", playerTurnValue); 
-//       setPlayerTurn(playerTurnValue);
-//     };
-//     fetchPlayerTurn();
-//   }, [accounts, monopolyContract]);
+  useEffect(() => {
+    const fetchPlayerTurn = async () => {
+      if(!monopolyContract) return;
+      const playerTurnValue = await monopolyContract.methods.getPlayerTurn().call();
+      console.log("playerTurn is : ", playerTurnValue); 
+      setPlayerTurn(playerTurnValue);
+    };
+    fetchPlayerTurn();
+  }, [account, monopolyContract]);
 
     //   Get Houses
-//     useEffect(() => {
-//   //   check Houses
-//   const getHouses = async () => {
-//         const houses = await monopolyContract.methods.getHouses().call();
-//         setHouses(houses);
-//         console.log("houses : ", houses);
-//       };
-//       getHouses();
-//     }, [accounts, monopolyContract,playerTurn]);
+    useEffect(() => {
+  //   check Houses
+  const getHouses = async () => {
+      if(!monopolyContract) return;
+      const houses = await monopolyContract.methods.getHouses().call();
+        setHouses(houses);
+        console.log("houses : ", houses);
+      };
+      getHouses();
+    }, [account, monopolyContract,playerTurn]);
 
   //   Reset Game
   const resetGame = async () => {
-    await monopolyContract.methods.resetGame().send({ from: accounts[0] });
+      if(!monopolyContract) return;
+      await monopolyContract.methods.resetGame().send({ from: account });
     setPlayerNumber(null);
     setPlayerPosition(0);
     setPlayerTurn(1);
@@ -92,46 +96,51 @@ function Demo() {
 
   //   Throw Dice
   const throwDice = async () => {
-    await monopolyContract.methods.throwDice().send({ from: accounts[0] });
+      if(!monopolyContract) return;
+      await monopolyContract.methods.throwDice().send({ from: account });
   };
 
   //   Build House
   const buildHouse = async () => {
-    await monopolyContract.methods.buildHouse().send({ from: accounts[0] });
+      if(!monopolyContract) return;
+      await monopolyContract.methods.buildHouse().send({ from: account });
   };
 
   //   End Turn
   const endTurn = async () => {
-    await monopolyContract.methods.endTurn().send({ from: accounts[0] });
+      if(!monopolyContract) return;
+      await monopolyContract.methods.endTurn().send({ from: account });
   };
 
   //   Player Balance
   const getPlayerBalance = async () => {
-    const balance = await moneyPolyContract.methods.balanceOf(accounts[0]).call();
+      if(!monopolyContract) return;
+      const balance = await moneyPolyContract.methods.balanceOf(account).call();
     setPlayerBalance(balance);
     console.log("balance is : ", balance); 
     console.log("playerBalance is : ", playerBalance); 
     console.log("player choice ", playerHasChoice);
   };
 
-//   useEffect(() => {
-//     if (!moneyPolyContract) {
-//       return;
-//     }
-//     getPlayerBalance();
-//   //  refreshHouses(); // test
-//   }, [accounts, moneyPolyContract]);
+  useEffect(() => {
+    if (!moneyPolyContract) {
+      return;
+    }
+    getPlayerBalance();
+  //  refreshHouses(); // test
+  }, [account, moneyPolyContract]);
 
 // All player positions
-// useEffect(() => {
-//   const getAllPlayerPositions = async () => {
-//     const allPlayerPositionsValue = await monopolyContract.methods.getAllPlayerPositions().call();
-//     console.log("allPlayerPositionsValue is : ", allPlayerPositionsValue); 
-//     setAllPlayerPositions(allPlayerPositionsValue);
-//   };
-//   getAllPlayerPositions();
-//   console.log("allPlayerPositions is : ", allPlayerPositions);
-// }, [accounts, monopolyContract]);
+useEffect(() => {
+  const getAllPlayerPositions = async () => {
+      if(!monopolyContract) return;
+      const allPlayerPositionsValue = await monopolyContract.methods.getAllPlayerPositions().call();
+    console.log("allPlayerPositionsValue is : ", allPlayerPositionsValue); 
+    setAllPlayerPositions(allPlayerPositionsValue);
+  };
+  getAllPlayerPositions();
+  console.log("allPlayerPositions is : ", allPlayerPositions);
+}, [account, monopolyContract]);
 
 
 
@@ -152,20 +161,20 @@ function Demo() {
   //   -----   EVENTS   -----
 
 
-//   useEffect(() => {
-//     if (!monopolyContract) {
-//       return;
-//     }
-//     monopolyContract.events.DiceThrown({}, (error: any, event: any) => {
-//       if (!error) {
-//         setPlayerPosition(event.returnValues.playerPosition);
-//         setPlayerTurn(event.returnValues.playerTurn);
-//         setPlayerHasChoice(event.returnValues.playerHasChoice);
-//       } else {
-//         console.error(error);
-//       }
-//     });
-//   }, [accounts, monopolyContract]);
+  useEffect(() => {
+    if (!monopolyContract) {
+      return;
+    }
+    monopolyContract.events.DiceThrown({}, (error: any, event: any) => {
+      if (!error) {
+        setPlayerPosition(event.returnValues.playerPosition);
+        setPlayerTurn(event.returnValues.playerTurn);
+        setPlayerHasChoice(event.returnValues.playerHasChoice);
+      } else {
+        console.error(error);
+      }
+    });
+  }, [account, monopolyContract]);
   
   
   //   -----   RENDERING   -----

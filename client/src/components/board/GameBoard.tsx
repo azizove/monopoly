@@ -1,6 +1,10 @@
 import React from "react";
-import PlayerNumber from "../playerNumber/PlayerNumber";
+// import PlayerNumber from "../playerNumber/PlayerNumber";
 import { GameSquare } from "./GameSquare";
+import PlayerAssign from "../gameControl/PlayerAssign";
+import { Grid } from "@mui/material";
+import PlayerDice from "../gameControl/PlayerDice";
+import CaseCard from "../card/CaseCard";
 
 export default function GameBoard() {
   const num_squares: Array<number> = Array.from(Array(40));
@@ -20,7 +24,17 @@ export default function GameBoard() {
 
 
         <div className="center-square square">
-          <PlayerNumber/>
+        <Grid container spacing={2} sx={{ m: 2 }}>
+          <Grid item xs={4}>
+            <PlayerAssign />
+          </Grid>
+          <Grid item xs={4}>
+            <PlayerDice />
+          </Grid>
+          <Grid item xs={4}>
+            <CaseCard />
+          </Grid>
+        </Grid>
         </div>
       </div>
     </React.Fragment>
