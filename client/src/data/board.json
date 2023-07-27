@@ -7,7 +7,7 @@
     },
     {
         "id": 2,
-        "name": "Gravesend",
+        "name": "Aave",
         "type": 1,
         "section": 4,
         "rent": 20,
@@ -21,7 +21,7 @@
     },
     {
         "id": 3,
-        "name": "Trudeau",
+        "name": "Uniswap",
         "type": 1,
         "section": 4,
         "rent": 20,
@@ -34,7 +34,7 @@
     },
     {
         "id": 4,
-        "name": "Sheepshead bay",
+        "name": "Uniswap",
         "type": 1,
         "section": 4,
         "rent": 20,
@@ -48,7 +48,7 @@
     },
     {
         "id": 5,
-        "name": "Governors Island",
+        "name": "MakerDAO",
         "type": 1,
         "section": 4,
         "rent": 120,

@@ -26,7 +26,7 @@ export const SquareInfo: React.FC<Props> = ({ square }) => {
             return <CentralParkDisplay name={name} />
         }
         if (type === SquareType.Go) {
-            return <GoDisplay name={name} />
+            return <GoDisplay square={square} />
         }
         if (type === SquareType.Utility) {
             return <UtilityDisplay name={name} />

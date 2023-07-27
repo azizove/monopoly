@@ -2,7 +2,6 @@ import React from "react";
 import { BoardSection, SquareType } from "../../models";
 import boardData from "../../data/board.json";
 import { SquareInfo } from "./SquareInfo";
-import Pawn from "../pawns/Pawn";
 import { RootState } from "../../store";
 import { useDispatch, } from "react-redux";
 import { setSquareInfo } from "../../store/slices/cardSlice";
@@ -48,6 +47,7 @@ export const GameSquare: React.FC<Props> = ({ id }) => {
   };
 
   const setSquare = (id: number | null) => {
+    console.log("setSquare", id);
     if(id) dispatch(setSquareInfo(boardData[id]));
     else dispatch(setSquareInfo(null));
   }
@@ -60,7 +60,6 @@ export const GameSquare: React.FC<Props> = ({ id }) => {
           id={getSquareId()}>
         <div className={getContainerClassName()}>
            <SquareInfo square={boardData[id]} />
-          {/* <Pawn color="blue"/> */}
         </div>
       </div>
     );

@@ -2,26 +2,42 @@ import { Button, Card, CardActions, CardContent } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import ReactDice, { ReactDiceRef } from "react-dice-complete";
 
-import useContract from "../../hooks/contract";
-
+// import useContract from "../../hooks/contract";
+import { useDispatch } from "react-redux";
+import { setPawnPosition } from "../../store/slices/pawnsSlice";
 type Props = {};
 
 const PlayerDice = (props: Props) => {
-  const reactDice = useRef<ReactDiceRef>(null);
-  const { monopolyContract, moneyPolyContract, account } = useContract();
-	const [diceValues, setDiceValues] = useState([4, 4]);
+  const dispatch = useDispatch();
 
-  const throwDice = async () => {
-    if (!monopolyContract) return;
-    try {
-      await monopolyContract.methods.throwDice().send({ from: account });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const reactDice = useRef<ReactDiceRef>(null);
+  const firstRenderRef = useRef(true);
+  // const { monopolyContract , account } = useContract();
+	const [diceValues, setDiceValues] = useState([]);
+	const [userRole, setUserRole] = useState(1);
+
+
+  // const throwDice = async () => {
+  //   if (!monopolyContract) return;
+  //   try {
+  //     await monopolyContract.methods.throwDice().send({ from: account });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const rollDone = (totalValue: number, values: number[]) => {
-    console.log(reactDice.current);
+    const firstRender = firstRenderRef.current;
+
+    if (firstRender) {
+      firstRenderRef.current = false;
+      return;
+    }
+    dispatch(setPawnPosition({
+      id: userRole+1,
+      steps: totalValue,
+    }))
+    setUserRole((userRole + 1) % 4);
   };
 
 	const diceThrowCallback =  () => {
@@ -29,7 +45,7 @@ const PlayerDice = (props: Props) => {
 			const totalValue = getRandomInt(2, 12)
 			const diceValues = getDiceValues(totalValue);
 			reactDice.current?.rollAll(diceValues)
-		}, 5000)
+		}, 10000)
 	}
 
 	const getDiceValues = (totalValue: number): number[] => {
@@ -50,9 +66,9 @@ const PlayerDice = (props: Props) => {
 	
 
 	useEffect(() => {
-    if (!monopolyContract) {
-      return;
-    }
+    // if (!monopolyContract) {
+    //   return;
+    // }
 		diceThrowCallback();
     // monopolyContract.events.DiceThrown({}, (error: any, event: any) => {
     //   if (!error) {
@@ -65,7 +81,7 @@ const PlayerDice = (props: Props) => {
     //   }
     // });
 		
-  }, [account, monopolyContract]);
+  }, []);
   return (
     <Card sx={{ minWidth: 275 }}>
       <CardContent>
@@ -76,11 +92,11 @@ const PlayerDice = (props: Props) => {
           disableIndividual
         />
       </CardContent>
-      <CardActions>
+      {/* <CardActions>
         <Button variant="contained" onClick={throwDice}>
           Throw Dice
         </Button>
-      </CardActions>
+      </CardActions> */}
     </Card>
   );
 };

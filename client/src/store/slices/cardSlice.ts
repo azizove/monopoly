@@ -15,15 +15,6 @@ export const cardSlice = createSlice({
     setSquareInfo: (state, action: PayloadAction<SquareInterface | null>) => {
       state.selectedSquare = action.payload;
     },
-    // decrement: (state) => {
-    //   state.value -= 1;
-    // },
-    // incrementByAmount: (state, action: PayloadAction<number>) => {
-    //   state.value += action.payload;
-    // },
-    // setcard: (state, action: PayloadAction<number>) => {
-    //   state.value = action.payload;
-    // },
   },
 });
 

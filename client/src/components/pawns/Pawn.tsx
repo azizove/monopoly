@@ -6,7 +6,7 @@ type Props = {
 
 const Pawn = (props: Props) => {
   return (
-    <span style={{fontSize:'50px', color: props.color}}>&#9823;</span>
+    <span style={{fontSize:'24px', color: props.color}}>&#9823;</span>
 
   )
 }
