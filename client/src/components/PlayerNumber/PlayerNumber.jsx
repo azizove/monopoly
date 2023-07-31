@@ -15,6 +15,9 @@ function Demo() {
   const [houses, setHouses] = useState([]);
   const [allPlayerPositions, setAllPlayerPositions] = useState([]);
 
+  // RAJOUT
+  const [diceValue, setDiceValue] = useState(1);
+
   //   -----   FUNCTIONS   -----
   //   Player Number
   const assignPlayerNumber = async () => {
@@ -158,6 +161,13 @@ useEffect(() => {
         setPlayerPosition(event.returnValues.playerPosition);
         setPlayerTurn(event.returnValues.playerTurn);
         setPlayerHasChoice(event.returnValues.playerHasChoice);
+
+        // A RAJOUTER
+        setDiceValue(event.returnValues.diceValue)
+        // FIN DU RAJOUT
+
+
+
       } else {
         console.error(error);
       }

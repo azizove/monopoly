@@ -206,31 +206,47 @@ contract Monopoly {
 }
 
     function setPlayerHasChoice() private {
+        // si peut construire
+        console.log("properties[players[msg.sender].playerPosition-1].isConstructible", properties[players[msg.sender].playerPosition-1].isConstructible);
+        console.log("!hasOtherOwner()", !hasOtherOwner());
+        console.log("moneyPolyContract.balanceOf(msg.sender)", moneyPolyContract.balanceOf(msg.sender));
+        console.log("properties[players[msg.sender].playerPosition-1].constructionCost", properties[players[msg.sender].playerPosition-1].constructionCost);
+        console.log("player has choice", playerHasChoice);
+
         if (properties[players[msg.sender].playerPosition-1].isConstructible && !hasOtherOwner()
             && moneyPolyContract.balanceOf(msg.sender) >= properties[players[msg.sender].playerPosition-1].constructionCost) {
             
             // on ne passe pas au tour suivant, car le joueur appelera buildHouse ou endTurn
             playerHasChoice = true;  
-
+        console.log("player has choice et on est rentre dans le premier bloc", playerHasChoice);
+        // si doit payer un loyer
         } else if (properties[players[msg.sender].playerPosition-1].isConstructible && hasOtherOwner()
             && moneyPolyContract.balanceOf(msg.sender) >= properties[players[msg.sender].playerPosition-1].rentPrice) {
             
             playerHasChoice = false;
-            payOwnerRent(properties[players[msg.sender].playerPosition-1].rentPrice * houses[players[msg.sender].playerPosition-1].amountOfHouses, msg.sender, positionOwnerSWallet());
-            
-            // si pas le choix, on passe au joueur suivant
+     // TEST1       payOwnerRent(properties[players[msg.sender].playerPosition-1].rentPrice * houses[players[msg.sender].playerPosition-1].amountOfHouses, msg.sender, positionOwnerSWallet());
             playerTurn = (playerTurn) % 4 + 1; 
             playerThrown = false;
+        console.log("player has choice et on est rentre dans le 2ene bloc", playerHasChoice);
+        // si pas le choix et rien a payer
+        } else {
+            playerHasChoice = false;
+            playerTurn = (playerTurn) % 4 + 1; 
+            playerThrown = false;
+        console.log("player has choice et on est rentre dans le 3ene bloc", playerHasChoice);
         }
     }
 
+/* TEST1
     modifier buildRequirment() {
         require(playerHasChoice == true, "Player must have choice");
         require(moneyPolyContract.balanceOf(msg.sender) >= properties[players[msg.sender].playerPosition-1].constructionCost, "Not enough tokens");
         _;
     }
+*/
 
-    function buildHouse() public onlyPlayer gameIsOn ItIsPlayerTurn buildRequirment() {
+        function buildHouse() public onlyPlayer gameIsOn ItIsPlayerTurn {
+  //  function buildHouse() public onlyPlayer gameIsOn ItIsPlayerTurn buildRequirment() {    TEST1
         houses[players[msg.sender].playerPosition-1].owner = players[msg.sender].playerNumber; // assigne le proprio
         houses[players[msg.sender].playerPosition-1].amountOfHouses += 1; // incremente amountOfHouses
         // Brûler les jetons nécessaires pour la construction de la maison

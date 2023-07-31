@@ -1,4 +1,11 @@
+cd truffle
 truffle migrate --network development
+truffle migrate --network goerli
+
+MoneyPoly : 
+   > contract address:    0x30e0Db3d7e589780b3772D9936a1e3152A5baca7
+Monopoly
+   > contract address:    0xDe66a2f81D077883D7f6324aD2d44Cc7d6Ba50eD
 
 git push origin smartcontract     // pousser sur ma branche
 
