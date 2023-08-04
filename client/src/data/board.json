@@ -7,64 +7,124 @@
     },
     {
         "id": 2,
-        "name": "Gravesend",
+        "name": "Aave",
         "type": 1,
         "section": 4,
-        "groupId": 1
+        "rent": 20,
+        "groupId": 1,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 3,
-        "name": "Trudeau",
-        "type": 2,
-        "section": 4
+        "name": "Uniswap",
+        "type": 1,
+        "section": 4,
+        "rent": 20,
+        "groupId": 11,
+        "houses": [
+            { "price": 20},
+            { "price": 40},
+            { "price": 60}
+        ]
     },
     {
         "id": 4,
-        "name": "Sheepshead bay",
+        "name": "Uniswap",
         "type": 1,
         "section": 4,
-        "groupId": 1
+        "rent": 20,
+        "groupId": 1,
+        "houses": [
+            { "price": 120},
+            { "price": 130},
+            { "price": 140},
+            { "price": 250}
+        ]
     },
     {
         "id": 5,
-        "name": "Governors Island",
+        "name": "MakerDAO",
         "type": 1,
         "section": 4,
-        "groupId": 1
+        "rent": 120,
+        "groupId": 1,
+        "houses": [
+            { "price": 220},
+            { "price": 230},
+            { "price": 240}
+        ]
     },
     {
         "id": 6,
         "name": "JFK",
-        "type": 2,
+        "type": 1,
         "section": 4,
-        "groupId": 10
+        "rent": 20,
+        "groupId": 11,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 7,
         "name": "Canarsie",
         "type": 1,
         "section": 4,
-        "groupId": 2
+        "rent": 20,
+        "groupId": 2,
+        "houses": [
+            { "price": 20},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 8,
         "name": "Pearson",
-        "type": 2,
-        "section": 4
+        "type": 1,
+        "section": 4,
+        "rent": 20,
+        "groupId": 11,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 9,
         "name": "Brownsville",
         "type": 1,
         "section": 4,
-        "groupId": 2
+        "rent": 20,
+        "groupId": 2,
+        "houses": [
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 10,
         "name": "Bushwick",
         "type": 1,
         "section": 4,
-        "groupId": 2
+        "rent": 20,
+        "groupId": 2,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 11,
@@ -77,62 +137,124 @@
         "name": "Forest Hills",
         "type": 1,
         "section": 3,
-        "groupId": 3
+        "rent": 20,
+        "groupId": 3,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 13,
         "name": "WDC",
-        "type": 2,
-        "section": 3
+        "type": 1,
+        "section": 3,
+        "rent": 20,
+        "groupId": 21,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 14,
         "name": "Rego Park",
         "type": 1,
         "section": 3,
-        "groupId": 3
+        "rent": 20,
+        "groupId": 3,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 15,
         "name": "Astoria",
         "type": 1,
         "section": 3,
-        "groupId": 3
+        "rent": 20,
+        "groupId": 3,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 16,
-        "name": "Newark",
-        "type": 2,
+        "name": "Mississauga",
+        "type": 1,
         "section": 3,
-        "groupId": 10
+        "groupId": 21,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 17,
         "name": "Dumbo",
         "type": 1,
         "section": 3,
-        "groupId": 4
+        "groupId": 4,
+        "houses": [
+            { "price": 220},
+            { "price": 230},
+            { "price": 240},
+            { "price": 250}
+        ]
     },
     {
         "id": 18,
         "name": "MTA",
         "icon": "subway",
-        "type": 8,
-        "section": 3
+        "type": 1,
+        "section": 3,
+        "rent": 20,
+        "groupId": 21,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 19,
         "name": "Clinton Hill",
         "type": 1,
         "section": 3,
-        "groupId": 4
+        "groupId": 4,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 20,
         "name": "Park Slope",
         "type": 1,
         "section": 3,
-        "groupId": 4
+        "rent": 20,
+        "groupId": 4,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 21,
@@ -145,62 +267,120 @@
         "name": "Hell's Kitchen",
         "type": 1,
         "section": 1,
-        "groupId": 5
+        "rent": 20,
+        "groupId": 5,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 23,
         "name": "Newark",
-        "type": 2,
-        "section": 1
+        "type": 1,
+        "section": 1,
+        "rent": 20,
+        "groupId": 31
     },
     {
         "id": 24,
         "name": "Chelsea",
         "type": 1,
         "section": 1,
-        "groupId": 5
+        "rent": 20,
+        "groupId": 5,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 25,
         "name": "West Village",
         "type": 1,
         "section": 1,
-        "groupId": 5
+        "rent": 20,
+        "groupId": 5,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 26,
         "name": "La Guardia",
-        "type": 2,
+        "type": 1,
         "section": 1,
-        "groupId": 10
+        "rent": 20,
+        "groupId": 31,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 27,
         "name": "Gramercy",
         "type": 1,
         "section": 1,
-        "groupId": 6
+        "rent": 20,
+        "groupId": 6,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 28,
         "name": "NYAIR",
-        "type": 2,
+        "type": 1,
         "section": 1,
-        "groupId": 10
+        "rent": 20,
+        "groupId": 31,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 29,
         "name": "Chinatown",
         "type": 1,
         "section": 1,
-        "groupId": 6
+        "rent": 20,
+        "groupId": 6,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 30,
         "name": "Greenwich Village",
         "type": 1,
         "section": 1,
-        "groupId": 6
+        "rent": 20,
+        "groupId": 6,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 31,
@@ -213,59 +393,124 @@
         "name": "Times Square",
         "type": 1,
         "section": 2,
-        "groupId": 7
+        "rent": 20,
+        "groupId": 7,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 33,
-        "name": "Boston Airport",
-        "type": 2,
-        "section": 2
+        "name": "Boston",
+        "type": 1,
+        "section": 2,
+        "rent": 20,
+        "groupId": 41,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 34,
         "name": "Midtown",
         "type": 1,
         "section": 2,
-        "groupId": 7
+        "rent": 20,
+        "groupId": 7,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 35,
         "name": "Columbus Circle",
         "type": 1,
         "section": 2,
-        "groupId": 7
+        "rent": 20,
+        "groupId": 7,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 36,
         "name": "Albany",
-        "type": 2,
+        "type": 1,
         "section": 2,
-        "groupId": 10
+        "rent": 20,
+        "groupId": 41,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 37,
         "name": "Con Edison",
         "type": 1,
         "section": 2,
-        "groupId": 8
+        "rent": 20,
+        "groupId": 8,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 38,
         "name": "Tribeca",
         "type": 1,
         "section": 2,
-        "groupId": 8
+        "rent": 20,
+        "groupId": 8,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 39,
-        "name": "Canada Air",
-        "type": 2,
-        "section": 2
+        "name": "HTC",
+        "type": 1,
+        "section": 2,
+        "rent": 20,
+        "groupId": 41,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     },
     {
         "id": 40,
         "name": "Wall Street",
         "section": 2,
-        "groupId": 8
+        "rent": 20,
+        "groupId": 8,
+        "houses": [
+            { "price": 20},
+            { "price": 30},
+            { "price": 40},
+            { "price": 50}
+        ]
     }
 ]

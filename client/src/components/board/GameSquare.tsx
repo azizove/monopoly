@@ -2,12 +2,17 @@ import React from "react";
 import { BoardSection, SquareType } from "../../models";
 import boardData from "../../data/board.json";
 import { SquareInfo } from "./SquareInfo";
-
+import { RootState } from "../../store";
+import { useDispatch, } from "react-redux";
+import { setSquareInfo } from "../../store/slices/cardSlice";
 interface Props {
   id: number;
 }
 
 export const GameSquare: React.FC<Props> = ({ id }) => {
+
+  const dispatch = useDispatch();
+
   const section: BoardSection = boardData[id]?.section!;
   const squareType: SquareType = boardData[id]?.type!;
 
@@ -41,11 +46,20 @@ export const GameSquare: React.FC<Props> = ({ id }) => {
     return "game-square-" + id;
   };
 
+  const setSquare = (id: number | null) => {
+    console.log("setSquare", id);
+    if(id) dispatch(setSquareInfo(boardData[id]));
+    else dispatch(setSquareInfo(null));
+  }
+
   const getSquare = () => {
     return (
-      <div className={getSquareClassName()} id={getSquareId()}>
+      <div  onMouseEnter={() => setSquare(id)}
+          onMouseLeave={() => setSquare(null)}
+          className={getSquareClassName()} 
+          id={getSquareId()}>
         <div className={getContainerClassName()}>
-          <SquareInfo square={boardData[id]} />
+           <SquareInfo square={boardData[id]} />
         </div>
       </div>
     );

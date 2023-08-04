@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState,  } from 'react';
+
 import './css/App.css';
 import { Contract } from 'web3-eth-contract';
 import json from './contracts/Monopoly.json';
@@ -14,19 +15,7 @@ const App: React.VFC = () => {
 
   const abi: any = json.abi;
 
-  // useEffect(() => {
-  //   (async() => {
-  //     if(web3 !== null) {
-  //       // const networkId = await web3.eth.net.getId();
-  //       const deployedNetwork = json.networks[5777];
-  //       const instance = new web3.eth.Contract(
-  //         abi,
-  //         deployedNetwork && deployedNetwork.address
-  //       );
-  //       setInstance(instance);
-  //     }
-  //   })();
-  // }, [isLoading, isWeb3]);
+
 
   const runExample = async() => {
     await instance?.methods.set('hello World').send({ from: accounts[0]});
@@ -36,9 +25,8 @@ const App: React.VFC = () => {
 
   return (
     <React.Fragment>
-      <CssBaseline />
-
-      <GameBoard />
+        <CssBaseline />
+        <GameBoard />
     </React.Fragment>
     // <div className="App">
     //   { isLoading ? <div>Loading Web3, accounts, and contract...</div>

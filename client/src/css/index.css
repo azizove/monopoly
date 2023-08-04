@@ -22,6 +22,16 @@ body {
   border: 1px solid black;
 }
 
+/* .container {
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+} */
+
 .square .container {
   display: flex;
   justify-content: space-between;
@@ -296,6 +306,23 @@ body {
   background: #365f7b;
 }
 
+.yellow-green {
+  background: #ECF87F;
+}
+
+.rose-water {
+  background: #F9BDC0;
+}
+
+.lilac {
+  background: #BD97CB;
+}
+
+.peach {
+  background: #E4B7A0;
+}
+
+
 .board div:nth-child(-n + 11) {
   grid-row: 11;
 }
@@ -436,10 +463,54 @@ body {
 
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: top;
 }
 
 .center-square .center-txt {
   font-weight: 1000;
   width: 100%;
+}
+
+/* Card CSS */
+
+.wrapper {
+  width: 94%;
+  margin: auto;
+}
+.box {
+  max-width: 320px;
+  min-height: 320px;
+  margin: 60px auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-shadow: 0 1px 1px 1px #ccc;
+  transition: 3s ease-in all;
+}
+.box:hover {
+  transform: rotate(30deg);
+}
+.box h2 {
+  text-align: center;
+  color: black;
+  padding: 20px;
+  margin: 0;
+  border: 2px solid black;
+}
+.box h2 small {
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+.box .align-center {
+  text-align: center;
+}
+.float-left {
+  float: left;
+}
+.float-right {
+  float: right;
+}
+.clear-both {
+  clear: both;
+  padding-bottom: 10px;
 }
