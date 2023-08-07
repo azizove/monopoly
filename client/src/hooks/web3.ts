@@ -17,26 +17,26 @@ const Hooks = (): state => {
     accounts: [],
   });
 
-  useEffect(() => {
-    (async(): Promise<void> => {
-      try {
-        const web3: Web3 = await getWeb3();
-        const accounts = await web3.eth.getAccounts();
-        setState({
-          ...state,
-          isLoading: false,
-          isWeb3: true,
-          web3,
-          accounts,
-        });
-      } catch {
-        setState({
-          ...state,
-          isLoading: false,
-        });
-      }
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async(): Promise<void> => {
+  //     try {
+  //       const web3: Web3 = await getWeb3();
+  //       const accounts = await web3.eth.getAccounts();
+  //       setState({
+  //         ...state,
+  //         isLoading: false,
+  //         isWeb3: true,
+  //         web3,
+  //         accounts,
+  //       });
+  //     } catch {
+  //       setState({
+  //         ...state,
+  //         isLoading: false,
+  //       });
+  //     }
+  //   })();
+  // }, []);
 
   const { isLoading, isWeb3, web3, accounts } = state;
   return { isLoading, isWeb3, web3, accounts };
