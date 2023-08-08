@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/monopoly/static/css/main.23480b78.chunk.css",
+    "main.js": "/monopoly/static/js/main.0990fad4.chunk.js",
+    "main.js.map": "/monopoly/static/js/main.0990fad4.chunk.js.map",
+    "runtime-main.js": "/monopoly/static/js/runtime-main.edcc9aa8.js",
+    "runtime-main.js.map": "/monopoly/static/js/runtime-main.edcc9aa8.js.map",
+    "static/js/2.1a6d04f6.chunk.js": "/monopoly/static/js/2.1a6d04f6.chunk.js",
+    "static/js/2.1a6d04f6.chunk.js.map": "/monopoly/static/js/2.1a6d04f6.chunk.js.map",
+    "index.html": "/monopoly/index.html",
+    "static/css/main.23480b78.chunk.css.map": "/monopoly/static/css/main.23480b78.chunk.css.map",
+    "static/js/2.1a6d04f6.chunk.js.LICENSE.txt": "/monopoly/static/js/2.1a6d04f6.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/monopoly/static/media/prisoner.3b794d23.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.edcc9aa8.js",
+    "static/js/2.1a6d04f6.chunk.js",
+    "static/css/main.23480b78.chunk.css",
+    "static/js/main.0990fad4.chunk.js"
+  ]
+}
